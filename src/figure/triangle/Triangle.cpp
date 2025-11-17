@@ -11,9 +11,9 @@ void Triangle::validate_side(const double side, const std::string &name) {
 }
 
 void Triangle::validate_triangle(const double a, const double b, const double c) {
-    if (!(a + b >= c ||
-          b + c >= a ||
-          a + c >= b)) {
+    if (!(a + b > c ||
+          b + c > a ||
+          a + c > b)) {
         throw std::invalid_argument("No triangle with such sides exist!");
     }
 }
