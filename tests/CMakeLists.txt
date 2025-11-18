@@ -8,10 +8,13 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(triangle-tests figure/TriangleTests.cpp
-        figure/CircleTests.cpp
-        util/StringToFigureTests.cpp
-        factory/StreamFactoryTests.cpp
-)
+add_executable(triangle-tests figure/TriangleTests.cpp)
+add_executable(rectangle-tests figure/RectangleTests.cpp)
+
+#figure/CircleTests.cpp
+#figure/RectangleTests.cpp
+#util/StringToFigureTests.cpp
+#factory/StreamFactoryTests.cpp
 
 target_link_libraries(triangle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
+target_link_libraries(rectangle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
