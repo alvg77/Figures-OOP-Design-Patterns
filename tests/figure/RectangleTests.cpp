@@ -43,7 +43,7 @@ TEST_CASE("Rectangle to_string returns correct format", "[rectangle][string]")
     REQUIRE(result.find('2') != std::string::npos);
 }
 
-TEST_CASE("Rectangle clone creates independent copy", "[rectangle][clone]")
+TEST_CASE("Rectangle clone creates an interchangable copy", "[rectangle][clone]")
 {
     const Rectangle original(5, 10);
     Rectangle* cloned = original.clone();
@@ -82,85 +82,60 @@ TEST_CASE("Rectangle construction fails with all negative sides", "[rectangle][f
 
 TEST_CASE("Rectangle construction fails for zero width", "[rectangle][fails]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(0, 1), std::invalid_argument);
 }
 
 TEST_CASE("Rectangle construction fails for zero height", "[rectangle][fails]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(1, 0), std::invalid_argument);
 }
 
-TEST_CASE("Rectangle construction fails for zero width and height", "[rectangle][fails]")
+TEST_CASE("Rectangle construction fails for NaN width", "[rectangle][special]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(std::numeric_limits<double>::quiet_NaN(), 1), std::invalid_argument);
 }
 
-TEST_CASE("Rectangle construction fails for NaN width", "[rectangle][fails]")
+TEST_CASE("Rectangle construction fails for NaN height", "[rectangle][special]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(1, std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
 }
 
-TEST_CASE("Rectangle construction fails for NaN height", "[rectangle][fails]")
+TEST_CASE("Rectangle construction fails for positive infinity width", "[rectangle][special]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(std::numeric_limits<double>::infinity(), 1), std::invalid_argument);
 }
 
-TEST_CASE("Rectangle construction fails for NaN parameters", "[rectangle][fails]")
+TEST_CASE("Rectangle construction fails for positive infinity height", "[rectangle][special]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(1, std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
-TEST_CASE("Rectangle construction fails for NaN height", "[rectangle][fails]")
+TEST_CASE("Rectangle construction fails for negative infinity width", "[rectangle][special]")
 {
-
+    REQUIRE_THROWS_AS(Rectangle(-std::numeric_limits<double>::infinity(), 1), std::invalid_argument);
 }
 
-TEST_CASE("Rectangle construction fails for positive infinity width", "[rectangle][fails]")
+TEST_CASE("Rectangle construction fails for negative infinity height", "[rectangle][special]")
 {
-
-}
-
-TEST_CASE("Rectangle construction fails for positive infinity height", "[rectangle][fails]")
-{
-
-}
-
-TEST_CASE("Rectangle construction fails for positive infinity parameters", "[rectangle][fails]")
-{
-
-}
-
-TEST_CASE("Rectangle construction fails for negative infinity width", "[rectangle][fails]")
-{
-
-}
-
-TEST_CASE("Rectangle construction fails for negative infinity height", "[rectangle][fails]")
-{
-
-}
-
-TEST_CASE("Rectangle construction fails for negative infinity parameters", "[rectangle][fails]")
-{
-
-}
-
-TEST_CASE("Rectangle fails when perimeter would overflow to infinity", "[rectangle][overflow]")
-{
-
+    REQUIRE_THROWS_AS(Rectangle(1, -std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
 TEST_CASE("Rectangle fails with parameters causing perimeter overflow", "[rectangle][overflow]")
 {
-
+    constexpr double large = std::numeric_limits<double>::max() / 2;
+    REQUIRE_THROWS_AS(Rectangle(large, large), std::invalid_argument);
 }
 
 TEST_CASE("Rectangle with very small but valid parameters", "[rectangle][edge]")
 {
+    constexpr double small = std::numeric_limits<double>::min();
+    const Rectangle rectangle(small, small);
+    REQUIRE_THAT(rectangle.perimeter(), Catch::Matchers::WithinRel(4 * small, 1e-10));
 
 }
 
 TEST_CASE("Rectangle with mixed magnitude parameters", "[rectangle][edge]")
 {
-
+    const Rectangle rectangle(1e5, 1e-5);
+    REQUIRE_THAT(rectangle.perimeter(), Catch::Matchers::WithinRel(200000.00002, 1e-10));
 }
