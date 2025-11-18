@@ -23,7 +23,4 @@ public:
     Triangle *clone() const override;
 };
 
-
-
-
 #endif //FIGURES_TRIANGLE_HPP

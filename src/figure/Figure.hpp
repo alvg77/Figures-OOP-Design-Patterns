@@ -4,6 +4,8 @@
 #include "../util/Clonable.hpp"
 #include "../util/StringConvertible.hpp"
 
+#include <ostream>
+
 class Figure : public Clonable, public StringConvertible {
 public:
     virtual double perimeter() const = 0;
