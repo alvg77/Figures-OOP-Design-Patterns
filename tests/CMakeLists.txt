@@ -12,6 +12,8 @@ add_executable(triangle-tests figure/TriangleTests.cpp)
 add_executable(rectangle-tests figure/RectangleTests.cpp)
 add_executable(circle-tests figure/CircleTests.cpp)
 add_executable(string-to-figure-tests util/StringToFigureTests.cpp)
+#add_executable(random-factory-tests factory/)
+add_executable(stream-factory-tests factory/StreamFactoryTests.cpp)
 
 #figure/CircleTests.cpp
 #figure/RectangleTests.cpp
@@ -22,3 +24,4 @@ target_link_libraries(triangle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
 target_link_libraries(rectangle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
 target_link_libraries(circle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
 target_link_libraries(string-to-figure-tests PRIVATE figures_lib Catch2::Catch2WithMain)
+target_link_libraries(stream-factory-tests PRIVATE figures_lib Catch2::Catch2WithMain)

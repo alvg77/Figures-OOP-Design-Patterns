@@ -1,5 +1,5 @@
-set(FIGURES_SOURCES figure/figure.hpp
-        util/clonable.hpp
+set(FIGURES_SOURCES figure/Figure.hpp
+        util/Clonable.hpp
         util/StringConvertible.hpp
         figure/triangle/Triangle.cpp
         figure/triangle/Triangle.hpp
