@@ -150,7 +150,6 @@ TEST_CASE("Factory handles multiple figures from same stream", "[streamfactory][
 
 TEST_CASE("Factory can be constructed with nullptr stream", "[streamfactory][nullptr]")
 {
-    // This test would need manual input, so we just verify construction doesn't crash
     REQUIRE_NOTHROW(StreamFigureFactory(nullptr));
 }
 

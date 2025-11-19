@@ -5,7 +5,6 @@
 
 #include "../../src/figure/triangle/Triangle.hpp"
 
-
 constexpr double TOLERANCE = 1e-10;
 
 struct TriangleData
