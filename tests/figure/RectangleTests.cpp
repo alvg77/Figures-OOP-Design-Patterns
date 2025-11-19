@@ -66,7 +66,7 @@ TEST_CASE("Rectangles handle extreme valid parameters", "[rectangle][perimeter][
 
 TEST_CASE("to_string produces correct format for various dimensions", "[rectangle][string]")
 {
-    auto [width, height, expected] = GENERATE(table<double, double, std::string>({
+    auto [width, height, expected] = GENERATE(values<RectangleToString>({
         {1, 2, "Rectangle 1 2"},
         {10, 20, "Rectangle 10 20"},
         {5.5, 7.3, "Rectangle 5.5 7.3"},
@@ -99,12 +99,56 @@ TEST_CASE("clone creates independent copy", "[rectangle][clone]")
 
 TEST_CASE("Constructor rejects negative dimensions", "[rectangle][validation][negative]")
 {
-    auto [width, height, desc] = GENERATE(table<double, double, const char*>({
+    auto [width, height, desc] = GENERATE(values<InvalidData>({
         {-1, 1, "negative width"},
         {1, -1, "negative height"},
         {-1, -1, "both negative"}
     }));
 
     INFO("Testing with " << desc << ": (" << width << ", " << height << ")");
+
     REQUIRE_THROWS_AS(Rectangle(width, height), std::invalid_argument);
+}
+
+TEST_CASE("Constructor rejects zero dimensions", "[rectangle][validation]")
+{
+    auto [width, height, desc] = GENERATE(values<InvalidData>({
+        {0, 1, "zero width"},
+        {1, 0, "zero height"}
+    }));
+
+    INFO("Testing with " << desc << ": (" << width << ", " << height << ")");
+    REQUIRE_THROWS_AS(Rectangle(width, height), std::invalid_argument);
+}
+
+TEST_CASE("Constructor rejects NaN values", "[rectangle][validation][special]")
+{
+    const auto side = GENERATE(0, 1);
+    std::array<double, 2> dimensions = {1, 1};
+    dimensions[side] = std::numeric_limits<double>::quiet_NaN();
+
+    INFO("NaN in dimension " << side);
+    REQUIRE_THROWS_AS(Rectangle(dimensions[0], dimensions[1]), std::invalid_argument);
+}
+
+TEST_CASE("Constructor rejects infinite values", "[rectangle][validation][special]")
+{
+    auto [value, side, desc] = GENERATE(table<double, int, const char*>({
+        {std::numeric_limits<double>::infinity(), 0, "positive infinity in width"},
+        {std::numeric_limits<double>::infinity(), 1, "positive infinity in height"},
+        {-std::numeric_limits<double>::infinity(), 0, "negative infinity in width"},
+        {-std::numeric_limits<double>::infinity(), 1, "negative infinity in height"}
+    }));
+
+    std::array<double, 2> dimensions = {1, 1};
+    dimensions[side] = value;
+
+    INFO("Testing " << desc);
+    REQUIRE_THROWS_AS(Rectangle(dimensions[0], dimensions[1]), std::invalid_argument);
+}
+
+TEST_CASE("Constructor detects arithmetic overflow", "[rectangle][validation][overflow]")
+{
+    constexpr double large = std::numeric_limits<double>::max() / 2;
+    REQUIRE_THROWS_AS(Rectangle(large, large), std::invalid_argument);
 }
