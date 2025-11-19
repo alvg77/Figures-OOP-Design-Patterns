@@ -6,7 +6,7 @@ int main()
 {
     try
     {
-        Application::run();
+        Application::getInstance().run();
     }
     catch (std::exception &e)
     {
