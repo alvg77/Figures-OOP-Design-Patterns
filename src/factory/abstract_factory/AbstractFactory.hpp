@@ -6,9 +6,10 @@
 
 #include "../FigureFactory.hpp"
 
-class AbstractFactory {
-public:
+class AbstractFactory
+{
+  public:
     static std::unique_ptr<FigureFactory> getFactory(std::vector<std::string> &inputType);
 };
 
-#endif //FIGURES_ABSTRACTFACTORY_HPP
+#endif // FIGURES_ABSTRACTFACTORY_HPP

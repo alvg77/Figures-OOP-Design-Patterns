@@ -6,8 +6,9 @@
 
 #include <ostream>
 
-class Figure : public Clonable, public StringConvertible {
-public:
+class Figure : public Clonable, public StringConvertible
+{
+  public:
     virtual double perimeter() const = 0;
 
     Figure *clone() const override = 0;
@@ -19,4 +20,4 @@ public:
 
 std::ostream &operator<<(std::ostream &os, const Figure &figure);
 
-#endif //FIGURES_FIGURE_HPP
+#endif // FIGURES_FIGURE_HPP

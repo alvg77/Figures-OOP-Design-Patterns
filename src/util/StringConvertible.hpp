@@ -3,10 +3,11 @@
 
 #include <string>
 
-class StringConvertible {
-public:
+class StringConvertible
+{
+  public:
     virtual std::string to_string() const = 0;
     virtual ~StringConvertible() = default;
 };
 
-#endif //FIGURES_STRING_CONVERTIBLE_HPP
+#endif // FIGURES_STRING_CONVERTIBLE_HPP

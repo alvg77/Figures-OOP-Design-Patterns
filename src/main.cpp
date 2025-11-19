@@ -2,10 +2,14 @@
 
 #include "../src/application/Application.hpp"
 
-int main() {
-    try {
+int main()
+{
+    try
+    {
         Application::run();
-    } catch (std::exception &e) {
+    }
+    catch (std::exception &e)
+    {
         std::cout << e.what() << std::endl;
     }
 

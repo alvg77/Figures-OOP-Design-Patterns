@@ -5,14 +5,15 @@
 
 #include "../Figure.hpp"
 
-class Rectangle final : public Figure {
-private:
+class Rectangle final : public Figure
+{
+  private:
     const double width;
     const double height;
 
     static void validateDimension(double value, const std::string &name);
 
-public:
+  public:
     Rectangle(double width, double height);
 
     double perimeter() const override;
@@ -22,4 +23,4 @@ public:
     Rectangle *clone() const override;
 };
 
-#endif //FIGURES_RECTANGLE_HPP
+#endif // FIGURES_RECTANGLE_HPP

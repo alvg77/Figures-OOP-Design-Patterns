@@ -3,8 +3,9 @@
 
 #include "../Figure.hpp"
 
-class Triangle final : public Figure {
-private:
+class Triangle final : public Figure
+{
+  private:
     const double a;
     const double b;
     const double c;
@@ -13,7 +14,7 @@ private:
 
     static void validate_triangle(double a, double b, double c);
 
-public:
+  public:
     Triangle(double a, double b, double c);
 
     double perimeter() const override;
@@ -23,4 +24,4 @@ public:
     Triangle *clone() const override;
 };
 
-#endif //FIGURES_TRIANGLE_HPP
+#endif // FIGURES_TRIANGLE_HPP

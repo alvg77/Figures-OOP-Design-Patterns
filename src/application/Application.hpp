@@ -4,11 +4,12 @@
 #include <string>
 #include <vector>
 
-class Application {
+class Application
+{
     static void split(const std::string &input, std::vector<std::string> &output);
 
-public:
+  public:
     static void run();
 };
 
-#endif //FIGURES_APPLICATION_HPP
+#endif // FIGURES_APPLICATION_HPP

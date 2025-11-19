@@ -5,13 +5,14 @@
 
 #include "../Figure.hpp"
 
-class Circle final : public Figure {
-private:
+class Circle final : public Figure
+{
+  private:
     const double radius;
 
     static void validateRadius(double radius);
 
-public:
+  public:
     explicit Circle(double radius);
 
     double perimeter() const override;
@@ -21,4 +22,4 @@ public:
     Circle *clone() const override;
 };
 
-#endif //FIGURES_CIRCLE_HPP
+#endif // FIGURES_CIRCLE_HPP

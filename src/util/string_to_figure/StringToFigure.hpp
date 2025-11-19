@@ -5,10 +5,11 @@
 
 #include "../../figure/Figure.hpp"
 
-class StringToFigure {
-public:
+class StringToFigure
+{
+  public:
     static std::unique_ptr<Figure> create_figure(const std::string &representation);
     static bool is_double(const std::string &str);
 };
 
-#endif //FIGURES_STRINGTOFIGURE_HPP
+#endif // FIGURES_STRINGTOFIGURE_HPP
