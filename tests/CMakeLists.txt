@@ -11,7 +11,8 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(triangle-tests figure/TriangleTests.cpp)
 add_executable(rectangle-tests figure/RectangleTests.cpp)
 add_executable(circle-tests figure/CircleTests.cpp)
-add_executable(string-to-figure-tests util/StringToFigureTests.cpp)
+add_executable(string-to-figure-tests util/StringToFigureTests.cpp
+        util/FigureUtilTests.cpp)
 add_executable(random-factory-tests factory/RandomFigureFactoryTests.cpp)
 add_executable(stream-factory-tests factory/StreamFactoryTests.cpp)
 

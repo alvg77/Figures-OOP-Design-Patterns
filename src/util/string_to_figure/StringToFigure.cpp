@@ -9,6 +9,8 @@
 #include "../../figure/rectangle/Rectangle.hpp"
 #include "../../figure/triangle/Triangle.hpp"
 
+#include <iostream>
+
 std::unique_ptr<Figure> StringToFigure::create_figure(const std::string &representation)
 {
     std::stringstream sstream(representation);
@@ -59,8 +61,9 @@ bool StringToFigure::is_double(const std::string &str)
 {
     try
     {
-        double val = std::stod(str);
-        return true;
+        size_t pos;
+        std::stod(str, &pos);
+        return pos == str.size();
     }
     catch (...)
     {
