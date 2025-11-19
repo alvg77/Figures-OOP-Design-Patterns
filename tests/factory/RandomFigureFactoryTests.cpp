@@ -2,7 +2,8 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include <unordered_set>
+
+#include <vector>
 
 #include "../../src/factory/random_figure_factory/RandomFigureFactory.hpp"
 #include "../../src/figure/Figure.hpp"
@@ -56,9 +57,9 @@ TEST_CASE("Factory creates multiple distinct figures", "[randomfactory][multiple
 {
     RandomFigureFactory factory;
 
-    auto figure1 = factory.create();
-    auto figure2 = factory.create();
-    auto figure3 = factory.create();
+    std::unique_ptr<Figure> figure1 = factory.create();
+    std::unique_ptr<Figure> figure2 = factory.create();
+    std::unique_ptr<Figure> figure3 = factory.create();
 
     REQUIRE(figure1 != nullptr);
     REQUIRE(figure2 != nullptr);
@@ -79,7 +80,7 @@ TEST_CASE("Factory generates all three figure types over multiple calls", "[rand
 
     for (int i = 0; i < SAMPLE_SIZE && !(hasCircle && hasRectangle && hasTriangle); ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
         REQUIRE(figure != nullptr);
 
         if (isCircle(figure.get()))
@@ -103,7 +104,7 @@ TEST_CASE("Generated circles have valid radii", "[randomfactory][circle][validat
 
     for (int i = 0; i < SAMPLE_SIZE && !foundCircle; ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
 
         if (isCircle(figure.get()))
         {
@@ -128,7 +129,7 @@ TEST_CASE("Generated rectangles have valid dimensions", "[randomfactory][rectang
 
     for (int i = 0; i < SAMPLE_SIZE && !foundRectangle; ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
 
         if (isRectangle(figure.get()))
         {
@@ -151,7 +152,7 @@ TEST_CASE("Generated triangles satisfy triangle inequality", "[randomfactory][tr
 
     for (int i = 0; i < SAMPLE_SIZE && !foundTriangle; ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
 
         if (isTriangle(figure.get()))
         {
@@ -218,12 +219,12 @@ TEST_CASE("Factory produces variety in generated values", "[randomfactory][rando
 {
     RandomFigureFactory factory;
 
-    std::unordered_set<double> perimeters;
+    std::vector<double> perimeters;
 
     for (int i = 0; i < 50; ++i)
     {
-        const auto figure = factory.create();
-        perimeters.insert(figure->perimeter());
+        const std::unique_ptr<Figure> figure = factory.create();
+        perimeters.push_back(figure->perimeter());
     }
 
     REQUIRE(perimeters.size() > 40);
@@ -235,7 +236,7 @@ TEST_CASE("Generated circles avoid overflow", "[randomfactory][circle][overflow]
 
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
 
         if (isCircle(figure.get()))
         {
@@ -252,7 +253,7 @@ TEST_CASE("Generated rectangles avoid overflow", "[randomfactory][rectangle][ove
 
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
 
         if (isRectangle(figure.get()))
         {
@@ -269,7 +270,7 @@ TEST_CASE("Generated triangles avoid overflow", "[randomfactory][triangle][overf
 
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        auto figure = factory.create();
+        std::unique_ptr<Figure> figure = factory.create();
 
         if (isTriangle(figure.get()))
         {
@@ -285,8 +286,8 @@ TEST_CASE("Multiple factories can coexist", "[randomfactory][multiple-factories]
     RandomFigureFactory factory1;
     RandomFigureFactory factory2;
 
-    auto figure1 = factory1.create();
-    auto figure2 = factory2.create();
+    std::unique_ptr<Figure> figure1 = factory1.create();
+    std::unique_ptr<Figure> figure2 = factory2.create();
 
     REQUIRE(figure1 != nullptr);
     REQUIRE(figure2 != nullptr);
