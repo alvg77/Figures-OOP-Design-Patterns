@@ -45,6 +45,11 @@ void Application::loadFigures()
 
     const std::unique_ptr<FigureFactory> factory = AbstractFactory::getFactory(splitInputs);
 
+    if (factory == nullptr)
+    {
+        throw std::runtime_error("Invalid input method");
+    }
+
     int n;
     do
     {
