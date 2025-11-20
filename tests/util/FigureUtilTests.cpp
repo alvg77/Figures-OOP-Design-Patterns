@@ -3,6 +3,7 @@
 #include <catch2/matchers/catch_matchers.hpp>
 
 #include <random>
+#include <ctime>
 
 #include "../../src/util/figure_util/FigureUtil.hpp"
 
@@ -42,7 +43,7 @@ TEST_CASE("Figure types return correct parameter counts", "FigureUtil")
 
 TEST_CASE("Generates valid figure types", "FigureUtil")
 {
-    std::mt19937_64 rng(12345);
+    std::mt19937_64 rng(time(nullptr));
 
     for (int i = 0; i < 100; ++i)
     {
@@ -54,7 +55,7 @@ TEST_CASE("Generates valid figure types", "FigureUtil")
 
 TEST_CASE("Generates all three figure types over multiple calls", "FigureUtil")
 {
-    std::mt19937_64 rng(12345);
+    std::mt19937_64 rng(time(nullptr));
 
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {

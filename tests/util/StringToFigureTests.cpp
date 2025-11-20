@@ -2,8 +2,6 @@
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-#include <iostream>
-
 #include "../../src/figure/circle/Circle.hpp"
 #include "../../src/figure/rectangle/Rectangle.hpp"
 #include "../../src/figure/triangle/Triangle.hpp"

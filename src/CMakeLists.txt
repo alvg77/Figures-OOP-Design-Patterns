@@ -38,6 +38,11 @@ add_library(figures_figure ${FIGURES_FIGURE})
 add_library(figures_util ${FIGURES_UTIL})
 add_library(figures_factory ${FIGURES_FACTORY})
 
+target_link_libraries(figures_figure PRIVATE figures_util)
+target_link_libraries(figures_util PRIVATE figures_figure)
+target_link_libraries(figures_factory PRIVATE figures_figure figures_util)
+target_link_libraries(figures_application PRIVATE figures_factory figures_figure figures_util)
+
 add_executable(figures main.cpp)
 
 target_link_libraries(figures
