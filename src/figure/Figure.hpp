@@ -1,10 +1,10 @@
 #ifndef FIGURES_FIGURE_HPP
 #define FIGURES_FIGURE_HPP
 
+#include <ostream>
+
 #include "../util/Clonable.hpp"
 #include "../util/StringConvertible.hpp"
-
-#include <ostream>
 
 class Figure : public Clonable, public StringConvertible
 {

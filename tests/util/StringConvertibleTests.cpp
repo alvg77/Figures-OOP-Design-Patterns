@@ -1,11 +1,10 @@
-#include "../../src/figure/circle/Circle.hpp"
-#include "../../src/figure/rectangle/Rectangle.hpp"
-
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 
 #include "../../src/figure/triangle/Triangle.hpp"
+#include "../../src/figure/circle/Circle.hpp"
+#include "../../src/figure/rectangle/Rectangle.hpp"
 
 struct TriangleToString
 {

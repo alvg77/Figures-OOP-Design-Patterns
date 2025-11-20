@@ -1,6 +1,5 @@
 #ifndef FIGURES_CLONABLE_HPP
 #define FIGURES_CLONABLE_HPP
-#include <memory>
 
 class Clonable
 {

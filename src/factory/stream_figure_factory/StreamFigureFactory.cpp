@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 #include <sstream>
 
 #include "../../util/figure_util/FigureUtil.hpp"

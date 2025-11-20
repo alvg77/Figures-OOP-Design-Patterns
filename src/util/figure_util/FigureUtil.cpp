@@ -1,7 +1,5 @@
 #include "FigureUtil.hpp"
 
-#include <iostream>
-#include <ostream>
 #include <stdexcept>
 
 FigureUtil::FigureType FigureUtil::strToFigure(const std::string &str)

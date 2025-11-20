@@ -7,8 +7,6 @@
 #include "../factory/FigureFactory.hpp"
 #include "../factory/abstract_factory/AbstractFactory.hpp"
 
-#include <list>
-
 void Application::split(const std::string &input, std::vector<std::string> &output)
 {
     std::stringstream sstream(input);

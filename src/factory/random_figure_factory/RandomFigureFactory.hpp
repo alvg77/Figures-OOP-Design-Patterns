@@ -2,6 +2,7 @@
 #define FIGURES_RANDOMFIGUREFACTORY_HPP
 
 #include <random>
+#include <memory>
 
 #include "../../figure/circle/Circle.hpp"
 #include "../../figure/rectangle/Rectangle.hpp"

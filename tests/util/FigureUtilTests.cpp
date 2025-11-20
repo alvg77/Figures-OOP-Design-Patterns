@@ -6,8 +6,6 @@
 
 #include "../../src/util/figure_util/FigureUtil.hpp"
 
-#include <iostream>
-
 constexpr int SAMPLE_SIZE = 100;
 
 TEST_CASE("Valid strings convert to correct figure types", "FigureUtil")
@@ -64,7 +62,7 @@ TEST_CASE("Generates all three figure types over multiple calls", "FigureUtil")
         bool hasCircle = false;
         bool hasRectangle = false;
 
-        for (int i = 0; i < SAMPLE_SIZE; ++i)
+        for (int j = 0; j < SAMPLE_SIZE; ++j)
         {
             const FigureUtil::FigureType type = FigureUtil::getRandomFigureType(rng);
 

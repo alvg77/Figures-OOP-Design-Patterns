@@ -1,7 +1,6 @@
 #include "Triangle.hpp"
 
 #include <cmath>
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 

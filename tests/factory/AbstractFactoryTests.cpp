@@ -2,12 +2,12 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 
+#include <filesystem>
+
 #include "../../src/factory/FigureFactory.hpp"
 #include "../../src/factory/abstract_factory/AbstractFactory.hpp"
 #include "../../src/factory/random_figure_factory/RandomFigureFactory.hpp"
 #include "../../src/factory/stream_figure_factory/StreamFigureFactory.hpp"
-
-#include <filesystem>
 
 bool isRandomFigureFactory(const FigureFactory *figfactory)
 {
@@ -42,18 +42,17 @@ TEST_CASE("Creates StreamFigureFactory for 'stdin' input", "[AbstractFactory]")
 
 TEST_CASE("Creates StreamFigureFactory with file stream for 'file <filename>' input", "[AbstractFactory]")
 {
-    std::string filename = "test_input.txt";
+    const std::string filename = "test_input.txt";
 
     std::ofstream testFile(filename);
     testFile << "Circle 5.0\n";
     testFile << "Rectangle 5.0 5.0\n";
-
+    testFile.close();
+    
     {
         std::vector<std::string> input = {"file", filename};
         const std::unique_ptr<FigureFactory> factory = AbstractFactory::getFactory(input);
         REQUIRE(isStreamFigureFactory(factory.get()));
-
-        testFile.close();
     }
 
     std::filesystem::remove(filename);

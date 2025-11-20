@@ -1,6 +1,7 @@
 #include "RandomFigureFactory.hpp"
 
 #include <ctime>
+#include <cmath>
 
 #include "../../util/figure_util/FigureUtil.hpp"
 

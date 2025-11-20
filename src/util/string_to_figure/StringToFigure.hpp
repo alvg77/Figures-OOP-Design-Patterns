@@ -2,6 +2,7 @@
 #define FIGURES_STRINGTOFIGURE_HPP
 
 #include <string>
+#include <memory>
 
 #include "../../figure/Figure.hpp"
 

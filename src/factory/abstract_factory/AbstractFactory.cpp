@@ -1,7 +1,5 @@
 #include "AbstractFactory.hpp"
 
-#include <iostream>
-
 #include "../random_figure_factory/RandomFigureFactory.hpp"
 #include "../stream_figure_factory/StreamFigureFactory.hpp"
 
