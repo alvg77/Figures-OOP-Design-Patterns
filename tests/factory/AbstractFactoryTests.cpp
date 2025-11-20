@@ -50,7 +50,7 @@ TEST_CASE("Creates StreamFigureFactory with file stream for 'file <filename>' in
 
     {
         std::vector<std::string> input = {"file", filename};
-        std::unique_ptr<FigureFactory> factory = AbstractFactory::getFactory(input);
+        const std::unique_ptr<FigureFactory> factory = AbstractFactory::getFactory(input);
         REQUIRE(isStreamFigureFactory(factory.get()));
 
         testFile.close();
