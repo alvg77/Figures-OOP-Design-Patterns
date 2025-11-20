@@ -27,7 +27,15 @@ std::unique_ptr<FigureFactory> AbstractFactory::getFactory(std::vector<std::stri
         {
             throw std::invalid_argument("Invalid number of arguments for 'file' choice");
         }
-        return std::make_unique<StreamFigureFactory>(std::make_unique<std::ifstream>(inputType.at(1)));
+
+        std::unique_ptr<std::ifstream> file = std::make_unique<std::ifstream>(inputType.at(1));
+
+        if (!file->is_open())
+        {
+            throw std::runtime_error("Cannot open file: '" + inputType.at(1) + "'");
+        }
+
+        return std::make_unique<StreamFigureFactory>(std::move(file));
     }
 
     throw std::invalid_argument("Invalid input");

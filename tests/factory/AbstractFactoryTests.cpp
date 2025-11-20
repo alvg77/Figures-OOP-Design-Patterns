@@ -58,6 +58,14 @@ TEST_CASE("Creates StreamFigureFactory with file stream for 'file <filename>' in
     std::filesystem::remove(filename);
 }
 
+TEST_CASE("Throws if invalid filename is provide for 'file <filename>' input", "[AbstractFactory]")
+{
+    const std::string filename = "test_input.txt";
+
+    std::vector<std::string> input = {"file", filename};
+    REQUIRE_THROWS_WITH(AbstractFactory::getFactory(input), "Cannot open file: '" + filename + "'");
+}
+
 TEST_CASE("Throws exception for 'file' without filename or with many filenames", "[AbstractFactory]")
 {
     std::vector<std::string> input =

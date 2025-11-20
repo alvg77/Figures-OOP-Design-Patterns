@@ -24,11 +24,17 @@ std::unique_ptr<Figure> StringToFigure::createFigure(const std::string &represen
     std::string temp;
     while (sstream >> temp)
     {
-        if (!isDouble(temp))
+        try
         {
-            throw std::invalid_argument("'" + temp + "' is not a double");
+            double value = std::stod(temp);
+            params.push_back(value);
+        } catch (const std::invalid_argument &e)
+        {
+            throw std::invalid_argument("'" + temp + "' is not a valid number");
+        } catch (const std::out_of_range &e)
+        {
+            throw std::invalid_argument("'" + temp + "' is too large");
         }
-        params.push_back(std::stod(temp));
     }
 
     if (figureName == "triangle")
@@ -59,18 +65,4 @@ std::unique_ptr<Figure> StringToFigure::createFigure(const std::string &represen
     }
 
     return nullptr;
-}
-
-bool StringToFigure::isDouble(const std::string &str)
-{
-    try
-    {
-        size_t pos;
-        std::stod(str, &pos);
-        return pos == str.size();
-    }
-    catch (...)
-    {
-        return false;
-    }
 }

@@ -164,21 +164,26 @@ TEST_CASE("createFigure throws on invalid figure name", "[StringToFigure]")
     }
 }
 
-TEST_CASE("createFigure throws on invalid numeric parameters", "[StringToFigure]")
+TEST_CASE("createFigure throws on non-numeric parameters", "[StringToFigure]")
 {
     SECTION("Non-numeric parameter for triangle")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 abc 5.0"), "'abc' is not a double");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 abc 5.0"), "'abc' is not a valid number");
     }
 
     SECTION("Non-numeric parameter for circle")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle xyz"), "'xyz' is not a double");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle xyz"), "'xyz' is not a valid number");
     }
 
     SECTION("Non-numeric parameter for rectangle")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 notanumber"), "'notanumber' is not a double");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 notanumber"), "'notanumber' is not a valid number");
+    }
+
+    SECTION("Number too large to be stored in double")
+    {
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle 4e+309"), "'4e+309' is too large");
     }
 }
 
@@ -216,38 +221,6 @@ TEST_CASE("createFigure handles scientific notation", "[StringToFigure]")
         std::unique_ptr<Figure> figure = StringToFigure::createFigure("rectangle 1e+130 2e-131");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
-    }
-}
-
-TEST_CASE("isDouble validates numeric strings", "[StringToFigure]")
-{
-    SECTION("Valid doubles")
-    {
-        REQUIRE(StringToFigure::isDouble("3.14"));
-        REQUIRE(StringToFigure::isDouble("42"));
-        REQUIRE(StringToFigure::isDouble("-5.5"));
-        REQUIRE(StringToFigure::isDouble("0.0"));
-        REQUIRE(StringToFigure::isDouble("1e10"));
-        REQUIRE(StringToFigure::isDouble("1.5e-131"));
-        REQUIRE(StringToFigure::isDouble(".5"));
-        REQUIRE(StringToFigure::isDouble("5."));
-    }
-
-    SECTION("Invalid doubles")
-    {
-        REQUIRE_FALSE(StringToFigure::isDouble("abc"));
-        REQUIRE_FALSE(StringToFigure::isDouble("3.14.15"));
-        REQUIRE_FALSE(StringToFigure::isDouble(""));
-        REQUIRE_FALSE(StringToFigure::isDouble("   "));
-        REQUIRE_FALSE(StringToFigure::isDouble("12abc"));
-        REQUIRE_FALSE(StringToFigure::isDouble("abc12"));
-    }
-
-    SECTION("Edge cases")
-    {
-        REQUIRE(StringToFigure::isDouble("inf"));
-        REQUIRE(StringToFigure::isDouble("-inf"));
-        REQUIRE(StringToFigure::isDouble("nan"));
     }
 }
 

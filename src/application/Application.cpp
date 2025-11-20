@@ -43,6 +43,11 @@ void Application::loadFigures()
     std::vector<std::string> splitInputs;
     split(input, splitInputs);
 
+    if (splitInputs.empty())
+    {
+        throw std::invalid_argument("No input method entered");
+    }
+
     const std::unique_ptr<FigureFactory> factory = AbstractFactory::getFactory(splitInputs);
 
     if (factory == nullptr)
@@ -54,7 +59,14 @@ void Application::loadFigures()
     do
     {
         std::cout << "\nSelect number of figures - n (if you enter more figures than n, only the first n of them will be processed): ";
-        std::cin >> n;
+        if (!(std::cin >> n))
+        {
+            std::cout << "\nInvalid input. Please try again.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            n = 0;
+            continue;
+        }
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (n <= 0)
@@ -94,7 +106,14 @@ void Application::menu()
         std::cout << "4. Delete figure\n";
         std::cout << "5. Quit\n";
 
-        std::cin >> input;
+        if (!(std::cin >> input))
+        {
+            std::cout << "\nInvalid input. Please try again.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
+
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (input)
@@ -116,8 +135,6 @@ void Application::menu()
             break;
         default:
             std::cout << "\nInvalid input. Please try again.\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 }
@@ -137,7 +154,13 @@ void Application::cloneFigure()
     std::cout << "Please provide the number, corresponding to the figure to be cloned: " << std::endl;
 
     int input;
-    std::cin >> input;
+    if (!(std::cin >> input))
+    {
+        std::cout << "\nInvalid input. Please try again.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
+    }
 
     if (input >= figures.size() || input < 0)
     {
@@ -154,7 +177,13 @@ void Application::deleteFigure()
     std::cout << "Please provide the number, corresponding to the figure to be deleted: " << std::endl;
 
     int input;
-    std::cin >> input;
+    if (!(std::cin >> input))
+    {
+        std::cout << "\nInvalid input. Please try again.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
+    }
 
     if (input >= figures.size() || input < 0)
     {
@@ -177,9 +206,23 @@ void Application::saveToFile() const
     {
         std::ofstream outputFile(input);
 
+        if (!outputFile.is_open())
+        {
+            std::cout << "\nError opening file. Please try again.\n";
+            return;
+        }
+
         for (const std::unique_ptr<Figure> &figure : figures)
         {
             outputFile << *figure;
+        }
+
+        if (outputFile.fail())
+        {
+            std::cout << "\nWarning: An error occurred while writing figures to file\n";
+        } else
+        {
+            std::cout << "\nFigures successfully written!\n";
         }
     }
 }
