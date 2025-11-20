@@ -178,7 +178,6 @@ TEST_CASE("createFigure throws on invalid numeric parameters")
     SECTION("Non-numeric parameter for circle")
     {
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle xyz"), "'xyz' is not a double");
-
     }
 
     SECTION("Non-numeric parameter for rectangle")

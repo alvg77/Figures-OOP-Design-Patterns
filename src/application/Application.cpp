@@ -87,7 +87,6 @@ void Application::menu()
         std::cin >> input;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-
         switch (input)
         {
         case 1:
