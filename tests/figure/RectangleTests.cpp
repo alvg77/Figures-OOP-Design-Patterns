@@ -12,7 +12,7 @@ struct RectangleParams
     double width, height;
 };
 
-TEST_CASE("Valid rectangles produce correct perimeter calculation")
+TEST_CASE("Valid rectangles produce correct perimeter calculation", "[Rectangle]")
 {
     auto [params, expected] = GENERATE(
         table<RectangleParams, double>({{{10, 20}, 60}, {{10, 5}, 30.0}, {{12, 12}, 48.0}, {{0.1, 0.2}, 0.6}}));
@@ -23,7 +23,7 @@ TEST_CASE("Valid rectangles produce correct perimeter calculation")
     REQUIRE_THAT(rectangle.perimeter(), Catch::Matchers::WithinRel(expected, TOLERANCE));
 }
 
-TEST_CASE("Rectangles handle extreme valid parameters")
+TEST_CASE("Rectangles handle extreme valid parameters", "[Rectangle]")
 {
     SECTION("Very large sides")
     {
@@ -45,7 +45,7 @@ TEST_CASE("Rectangles handle extreme valid parameters")
     }
 }
 
-TEST_CASE("clone creates independent copy")
+TEST_CASE("Rectangle clone creates independent copy", "[Rectangle]")
 {
     const Rectangle original(5, 10);
     Rectangle *cloned = original.clone();
@@ -57,7 +57,7 @@ TEST_CASE("clone creates independent copy")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative and zero dimensions")
+TEST_CASE("Rectangle constructor rejects negative and zero dimensions", "[Rectangle]")
 {
     auto [params, err] =
         GENERATE(table<RectangleParams, std::string>({{{-1, 1}, "'width' must be a finite positive value"},
@@ -72,7 +72,7 @@ TEST_CASE("Constructor rejects negative and zero dimensions")
     REQUIRE_THROWS_WITH(Rectangle(params.width, params.height), err);
 }
 
-TEST_CASE("Constructor rejects NaN values")
+TEST_CASE("Rectangle constructor rejects NaN values", "[Rectangle]")
 {
     const auto side = GENERATE(0, 1);
     double dimensions[] = {1, 1};
@@ -85,7 +85,7 @@ TEST_CASE("Constructor rejects NaN values")
     REQUIRE_THROWS_WITH(Rectangle(dimensions[0], dimensions[1]), errMessages[side]);
 }
 
-TEST_CASE("Constructor rejects infinite values")
+TEST_CASE("Rectangle constructor rejects infinite values", "[Rectangle]")
 {
     auto [value, side] = GENERATE(table<double, unsigned>({{std::numeric_limits<double>::infinity(), 0},
                                                            {std::numeric_limits<double>::infinity(), 1},
@@ -102,7 +102,7 @@ TEST_CASE("Constructor rejects infinite values")
     REQUIRE_THROWS_WITH(Rectangle(dimensions[0], dimensions[1]), errMessages[side]);
 }
 
-TEST_CASE("Constructor detects arithmetic overflow of perimeter")
+TEST_CASE("Rectangle constructor detects arithmetic overflow of perimeter", "[Rectangle]")
 {
     constexpr double large = std::numeric_limits<double>::max() / 2;
     REQUIRE_THROWS_WITH(Rectangle(large, large), "Perimeter must be a finite positive value");

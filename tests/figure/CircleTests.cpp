@@ -14,7 +14,7 @@ struct CircleParams
     double radius, expected;
 };
 
-TEST_CASE("Valid circles produce correct perimeter calculation")
+TEST_CASE("Valid circles produce correct perimeter calculation", "[Circle]")
 {
     auto [radius, expected] =
         GENERATE(values<CircleParams>({{5, 10.0 * M_PI}, {1e-5, 2e-5 * M_PI}, {10, 20.0 * M_PI}, {7.5, 15.0 * M_PI}}));
@@ -25,7 +25,7 @@ TEST_CASE("Valid circles produce correct perimeter calculation")
     REQUIRE_THAT(circle.perimeter(), Catch::Matchers::WithinRel(expected, TOLERANCE));
 }
 
-TEST_CASE("Circles handle extreme valid parameters")
+TEST_CASE("Circles handle extreme valid parameters", "[Circle]")
 {
     SECTION("Very large radius")
     {
@@ -42,7 +42,7 @@ TEST_CASE("Circles handle extreme valid parameters")
     }
 }
 
-TEST_CASE("clone creates independent copy")
+TEST_CASE("Circle clone creates independent copy", "[Circle]")
 {
     const Circle original(10);
     Circle *cloned = original.clone();
@@ -54,7 +54,7 @@ TEST_CASE("clone creates independent copy")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects invalid radius values")
+TEST_CASE("Circle constructor rejects invalid radius values", "[Circle]")
 {
     SECTION("Negative")
     {
@@ -82,7 +82,7 @@ TEST_CASE("Constructor rejects invalid radius values")
     }
 }
 
-TEST_CASE("Constructor detects arithmetic overflow of perimeter")
+TEST_CASE("Circle constructor detects arithmetic overflow of perimeter", "[Circle]")
 {
     constexpr double large = std::numeric_limits<double>::max();
     REQUIRE_THROWS_WITH(Circle(large), "Perimeter must be a finite positive value");

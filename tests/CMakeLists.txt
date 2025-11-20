@@ -8,22 +8,22 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(triangle-tests figure/TriangleTests.cpp)
-add_executable(rectangle-tests figure/RectangleTests.cpp)
-add_executable(circle-tests figure/CircleTests.cpp)
-add_executable(string-to-figure-tests util/StringToFigureTests.cpp)
-add_executable(figure-util-tests util/FigureUtilTests.cpp)
-add_executable(string-convertible-tests util/StringConvertibleTests.cpp)
-add_executable(random-factory-tests factory/RandomFigureFactoryTests.cpp)
-add_executable(stream-factory-tests factory/StreamFactoryTests.cpp)
-add_executable(abstract-factory-tests factory/AbstractFactoryTests.cpp)
+set(FIGURES_TEST_SOURCES
+        figure/TriangleTests.cpp
+        figure/RectangleTests.cpp
+        figure/CircleTests.cpp
+        util/StringToFigureTests.cpp
+        util/FigureUtilTests.cpp
+        util/StringConvertibleTests.cpp
+        factory/RandomFigureFactoryTests.cpp
+        factory/StreamFigureFactoryTests.cpp
+        factory/AbstractFactoryTests.cpp
+)
 
-target_link_libraries(triangle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(rectangle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(circle-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(string-to-figure-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(figure-util-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(string-convertible-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(random-factory-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(stream-factory-tests PRIVATE figures_lib Catch2::Catch2WithMain)
-target_link_libraries(abstract-factory-tests PRIVATE figures_lib Catch2::Catch2WithMain)
+add_executable(figures-tests ${FIGURES_TEST_SOURCES})
+
+target_link_libraries(figures-tests PRIVATE
+        figures_lib
+        Catch2::Catch2WithMain
+)
+

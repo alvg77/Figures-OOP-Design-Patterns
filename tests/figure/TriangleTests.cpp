@@ -12,7 +12,7 @@ struct TriangleParams
     double a, b, c;
 };
 
-TEST_CASE("Valid triangles produce correct perimeter calculation")
+TEST_CASE("Valid triangles produce correct perimeter calculation", "[Triangle]")
 {
     auto [params, expected] = GENERATE(table<TriangleParams, double>(
         {{{3, 4, 5}, 12.0}, {{15, 25, 35}, 75.0}, {{7, 7, 7}, 21.0}, {{5, 5, 8}, 18.0}, {{0.1, 0.2, 0.25}, 0.55}}));
@@ -23,7 +23,7 @@ TEST_CASE("Valid triangles produce correct perimeter calculation")
     REQUIRE_THAT(triangle.perimeter(), Catch::Matchers::WithinRel(expected, TOLERANCE));
 }
 
-TEST_CASE("Triangles handle extreme valid parameters")
+TEST_CASE("Triangles handle extreme valid parameters", "[Triangle]")
 {
     SECTION("Very large sides")
     {
@@ -51,7 +51,7 @@ TEST_CASE("Triangles handle extreme valid parameters")
     }
 }
 
-TEST_CASE("clone creates independent copy")
+TEST_CASE("Triangle clone creates independent copy", "[Triangle]")
 {
     const Triangle original(5, 6, 7);
     Triangle *cloned = original.clone();
@@ -63,7 +63,7 @@ TEST_CASE("clone creates independent copy")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative and zero side lengths")
+TEST_CASE("Constructor rejects negative and zero side lengths", "[Triangle]")
 {
     auto [params, err] =
         GENERATE(table<TriangleParams, std::string>({{{-1, 2, 3}, "'a' must be a finite positive value"},
@@ -78,7 +78,7 @@ TEST_CASE("Constructor rejects negative and zero side lengths")
     REQUIRE_THROWS_WITH(Triangle(params.a, params.b, params.c), err);
 }
 
-TEST_CASE("Constructor enforces triangle inequality")
+TEST_CASE("Constructor enforces triangle inequality", "[Triangle]")
 {
     auto [a, b, c] = GENERATE(values<TriangleParams>({{1, 2, 10}, {1, 10, 2}, {10, 1, 2}, {1, 2, 3}}));
 
@@ -87,7 +87,7 @@ TEST_CASE("Constructor enforces triangle inequality")
     REQUIRE_THROWS_WITH(Triangle(a, b, c), "No triangle with such sides exist!");
 }
 
-TEST_CASE("Constructor rejects NaN values")
+TEST_CASE("Triangle constructor rejects NaN values", "[Triangle]")
 {
     constexpr double nan = std::numeric_limits<double>::quiet_NaN();
 
@@ -102,7 +102,7 @@ TEST_CASE("Constructor rejects NaN values")
     REQUIRE_THROWS_WITH(Triangle(sides[0], sides[1], sides[2]), errMessages[side]);
 }
 
-TEST_CASE("Constructor rejects infinite values")
+TEST_CASE("Triangle constructor rejects infinite values", "[Triangle]")
 {
     auto [value, side] = GENERATE(table<double, unsigned>({{std::numeric_limits<double>::infinity(), 0},
                                                            {std::numeric_limits<double>::infinity(), 1},
@@ -120,7 +120,7 @@ TEST_CASE("Constructor rejects infinite values")
     REQUIRE_THROWS_WITH(Triangle(sides[0], sides[1], sides[2]), errMessages[side]);
 }
 
-TEST_CASE("Constructor detects arithmetic overflow of perimeter")
+TEST_CASE("Triangle constructor detects arithmetic overflow of perimeter", "[Triangle]")
 {
     constexpr double large = std::numeric_limits<double>::max() / 2;
     REQUIRE_THROWS_WITH(Triangle(large, large, large), "Perimeter must be a finite positive value");

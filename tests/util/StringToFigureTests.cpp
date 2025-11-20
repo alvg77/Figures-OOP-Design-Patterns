@@ -2,15 +2,14 @@
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
+#include <iostream>
+
 #include "../../src/figure/circle/Circle.hpp"
 #include "../../src/figure/rectangle/Rectangle.hpp"
 #include "../../src/figure/triangle/Triangle.hpp"
 #include "../../src/util/string_to_figure/StringToFigure.hpp"
 
-#include <iostream>
-#include <oneapi/tbb/info.h>
-
-TEST_CASE("createFigure creates valid Triangle")
+TEST_CASE("createFigure creates valid Triangle", "[StringToFigure]")
 {
     SECTION("Lowercase triangle")
     {
@@ -48,7 +47,7 @@ TEST_CASE("createFigure creates valid Triangle")
     }
 }
 
-TEST_CASE("createFigure creates valid Circle")
+TEST_CASE("createFigure creates valid Circle", "[StringToFigure]")
 {
     SECTION("Lowercase circle")
     {
@@ -79,7 +78,7 @@ TEST_CASE("createFigure creates valid Circle")
     }
 }
 
-TEST_CASE("createFigure creates valid Rectangle")
+TEST_CASE("createFigure creates valid Rectangle", "[StringToFigure]")
 {
     SECTION("Lowercase rectangle")
     {
@@ -110,7 +109,7 @@ TEST_CASE("createFigure creates valid Rectangle")
     }
 }
 
-TEST_CASE("createFigure throws on invalid parameter count")
+TEST_CASE("createFigure throws on invalid parameter count", "[StringToFigure]")
 {
     SECTION("Triangle with too few parameters")
     {
@@ -144,7 +143,7 @@ TEST_CASE("createFigure throws on invalid parameter count")
     }
 }
 
-TEST_CASE("createFigure throws on invalid figure name")
+TEST_CASE("createFigure throws on invalid figure name", "[StringToFigure]")
 {
     SECTION("Unknown figure name")
     {
@@ -167,7 +166,7 @@ TEST_CASE("createFigure throws on invalid figure name")
     }
 }
 
-TEST_CASE("createFigure throws on invalid numeric parameters")
+TEST_CASE("createFigure throws on invalid numeric parameters", "[StringToFigure]")
 {
     SECTION("Non-numeric parameter for triangle")
     {
@@ -185,20 +184,20 @@ TEST_CASE("createFigure throws on invalid numeric parameters")
     }
 }
 
-TEST_CASE("createFigure handles negative and zero values")
+TEST_CASE("createFigure handles negative and zero values", "[StringToFigure]")
 {
     SECTION("Negative parameter for circle")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle -5.0"), "Radius must be a positive number");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle -5.0"), "Radius must be a finite positive value");
     }
 
     SECTION("Zero parameter for rectangle")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 0.0 5.0"), "'width' must be a positive number");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 0.0 5.0"), "'width' must be a finite positive value");
     }
 }
 
-TEST_CASE("createFigure handles scientific notation")
+TEST_CASE("createFigure handles scientific notation", "[StringToFigure]")
 {
     SECTION("Circle with scientific notation")
     {
@@ -222,7 +221,7 @@ TEST_CASE("createFigure handles scientific notation")
     }
 }
 
-TEST_CASE("isDouble validates numeric strings")
+TEST_CASE("isDouble validates numeric strings", "[StringToFigure]")
 {
     SECTION("Valid doubles")
     {
@@ -254,7 +253,7 @@ TEST_CASE("isDouble validates numeric strings")
     }
 }
 
-TEST_CASE("createFigure handles decimal values")
+TEST_CASE("createFigure handles decimal values", "[StringToFigure]")
 {
     SECTION("Triangle with decimal values")
     {

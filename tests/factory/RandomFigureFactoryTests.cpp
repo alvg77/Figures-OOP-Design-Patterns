@@ -31,7 +31,7 @@ bool isTriangle(const Figure *fig)
     return dynamic_cast<const Triangle *>(fig) != nullptr;
 }
 
-TEST_CASE("Factory creates valid figures")
+TEST_CASE("Factory creates valid figures", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
 
@@ -41,7 +41,7 @@ TEST_CASE("Factory creates valid figures")
     REQUIRE((isCircle(figure.get()) || isRectangle(figure.get()) || isTriangle(figure.get())));
 }
 
-TEST_CASE("Factory creates multiple distinct figures")
+TEST_CASE("Factory creates multiple distinct figures", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
 
@@ -58,7 +58,7 @@ TEST_CASE("Factory creates multiple distinct figures")
     REQUIRE(figure1.get() != figure3.get());
 }
 
-TEST_CASE("Factory generates all three figure types over multiple calls")
+TEST_CASE("Factory generates all three figure types over multiple calls", "[RandomFigureFactory]")
 {
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
@@ -95,7 +95,7 @@ TEST_CASE("Factory generates all three figure types over multiple calls")
     }
 }
 
-TEST_CASE("Factory generates figures with approximately uniform distribution")
+TEST_CASE("Factory generates figures with approximately uniform distribution", "[RandomFigureFactory]")
 {
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
@@ -135,7 +135,7 @@ TEST_CASE("Factory generates figures with approximately uniform distribution")
     }
 }
 
-TEST_CASE("Circles are successfully generated with valid values")
+TEST_CASE("Circles are successfully generated with valid values", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
     int circlesFound = 0;
@@ -154,7 +154,7 @@ TEST_CASE("Circles are successfully generated with valid values")
     REQUIRE(circlesFound >= 20);
 }
 
-TEST_CASE("Rectangles are successfully generated with valid values")
+TEST_CASE("Rectangles are successfully generated with valid values", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
     int rectanglesFound = 0;
@@ -173,7 +173,7 @@ TEST_CASE("Rectangles are successfully generated with valid values")
     REQUIRE(rectanglesFound >= 20);
 }
 
-TEST_CASE("Triangles are successfully generated with valid values")
+TEST_CASE("Triangles are successfully generated with valid values", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
 
@@ -193,7 +193,7 @@ TEST_CASE("Triangles are successfully generated with valid values")
     REQUIRE(trianglesFound >= 20);
 }
 
-TEST_CASE("Generated figures have valid perimeter values")
+TEST_CASE("Generated figures have valid perimeter values", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
 
@@ -207,7 +207,7 @@ TEST_CASE("Generated figures have valid perimeter values")
     }
 }
 
-TEST_CASE("Figures with variety of values are generated")
+TEST_CASE("Figures with variety of values are generated", "[RandomFigureFactory]")
 {
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
@@ -234,7 +234,7 @@ TEST_CASE("Figures with variety of values are generated")
     }
 }
 
-TEST_CASE("Multiple factories can coexist and generate separate figures")
+TEST_CASE("Multiple factories can coexist and generate separate figures", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory1;
     RandomFigureFactory factory2;
@@ -247,7 +247,7 @@ TEST_CASE("Multiple factories can coexist and generate separate figures")
     REQUIRE(figure1.get() != figure2.get());
 }
 
-TEST_CASE("Factory can create many figures")
+TEST_CASE("Factory can create many figures", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
 

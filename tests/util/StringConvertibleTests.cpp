@@ -25,11 +25,11 @@ struct CircleToString
     std::string expected;
 };
 
-TEST_CASE("Triangle toString returns correct format")
+TEST_CASE("Triangle toString returns correct format", "[StringConvertible]")
 {
     auto [a, b, c, expected] =
         GENERATE(values<TriangleToString>({{3, 4, 5, "Triangle 3 4 5"},
-                                           {3.5, 4.7, 5.9, "triangle 3.5 4.7 5.9"},
+                                           {3.5, 4.7, 5.9, "Triangle 3.5 4.7 5.9"},
                                            {7, 7, 7, "Triangle 7 7 7"},
                                            {5, 5, 8, "Triangle 5 5 8"},
                                            {0.1, 0.2, 0.25, "Triangle 0.1 0.2 0.25"},
@@ -44,7 +44,7 @@ TEST_CASE("Triangle toString returns correct format")
     REQUIRE(result == expected);
 }
 
-TEST_CASE("toString produces correct format for various dimensions")
+TEST_CASE("toString produces correct format for various dimensions", "[StringConvertible]")
 {
     auto [width, height, expected] = GENERATE(values<RectangleToString>({{1, 2, "Rectangle 1 2"},
                                                                          {10, 20, "Rectangle 10 20"},
@@ -62,14 +62,14 @@ TEST_CASE("toString produces correct format for various dimensions")
     REQUIRE(result == expected);
 }
 
-TEST_CASE("toString produces correct format for various radii")
+TEST_CASE("toString produces correct format for various radii", "[StringConvertible]")
 {
     auto [radius, expected] = GENERATE(values<CircleToString>({{10, "Circle 10"},
                                                                {5, "Circle 5"},
                                                                {7.5, "Circle 7.5"},
                                                                {0.1, "Circle 0.1"},
                                                                {2.71828, "Circle 2.71828"},
-                                                               {1.5e2, "Circle 1.5e2"},
+                                                               {1.5e2, "Circle 150"},
                                                                {0.001, "Circle 0.001"}}));
 
     CAPTURE(radius, expected);

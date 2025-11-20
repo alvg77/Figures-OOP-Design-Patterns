@@ -10,7 +10,7 @@
 
 constexpr int SAMPLE_SIZE = 100;
 
-TEST_CASE("Valid strings convert to correct figure types")
+TEST_CASE("Valid strings convert to correct figure types", "FigureUtil")
 {
     SECTION("triangle")
     {
@@ -28,21 +28,21 @@ TEST_CASE("Valid strings convert to correct figure types")
     }
 }
 
-TEST_CASE("strToFigure rejects invalid strings")
+TEST_CASE("strToFigure rejects invalid strings", "FigureUtil")
 {
     const std::string str = GENERATE("invalid", "", "Triangle", "CIRCLE", "   rectangle", "circle   ", "asy9h237@@f23");
 
     REQUIRE_THROWS_WITH(FigureUtil::strToFigure(str), "Invalid figure type: '" + str + "'");
 }
 
-TEST_CASE("Figure types return correct parameter counts")
+TEST_CASE("Figure types return correct parameter counts", "FigureUtil")
 {
     REQUIRE(FigureUtil::getFigureParams(FigureUtil::TRIANGLE) == 3);
     REQUIRE(FigureUtil::getFigureParams(FigureUtil::CIRCLE) == 1);
     REQUIRE(FigureUtil::getFigureParams(FigureUtil::RECTANGLE) == 2);
 }
 
-TEST_CASE("Generates valid figure types")
+TEST_CASE("Generates valid figure types", "FigureUtil")
 {
     std::mt19937_64 rng(12345);
 
@@ -54,7 +54,7 @@ TEST_CASE("Generates valid figure types")
     }
 }
 
-TEST_CASE("Generates all three figure types over multiple calls")
+TEST_CASE("Generates all three figure types over multiple calls", "FigureUtil")
 {
     std::mt19937_64 rng(12345);
 
@@ -82,7 +82,7 @@ TEST_CASE("Generates all three figure types over multiple calls")
     }
 }
 
-TEST_CASE("strToFigure and getFigureParams work together correctly")
+TEST_CASE("strToFigure and getFigureParams work together correctly", "FigureUtil")
 {
     const FigureUtil::FigureType triangleType = FigureUtil::strToFigure("triangle");
     const FigureUtil::FigureType circleType = FigureUtil::strToFigure("circle");
@@ -93,7 +93,7 @@ TEST_CASE("strToFigure and getFigureParams work together correctly")
     REQUIRE(FigureUtil::getFigureParams(rectangleType) == 2);
 }
 
-TEST_CASE("Random generation produces the same results with the same seeds")
+TEST_CASE("Random generation produces the same results with the same seeds", "FigureUtil")
 {
     std::mt19937_64 rng1(42);
     std::mt19937_64 rng2(42);
@@ -110,7 +110,7 @@ TEST_CASE("Random generation produces the same results with the same seeds")
     REQUIRE(sequence1 == sequence2);
 }
 
-TEST_CASE("Random generation produces different sequences with different seeds")
+TEST_CASE("Random generation produces different sequences with different seeds", "FigureUtil")
 {
     std::mt19937_64 rng1(111);
     std::mt19937_64 rng2(222);
