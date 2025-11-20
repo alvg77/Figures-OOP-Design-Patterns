@@ -10,7 +10,7 @@
 #include "../../src/figure/rectangle/Rectangle.hpp"
 #include "../../src/figure/triangle/Triangle.hpp"
 
-constexpr double TOLERANCE = 1e-9;
+constexpr double TOLERANCE = 1e-10;
 constexpr int SAMPLE_SIZE = 100;
 constexpr int LARGE_SAMPLE = 1000;
 
@@ -68,7 +68,7 @@ TEST_CASE("Factory generates all three figure types over multiple calls")
         bool hasRectangle = false;
         bool hasTriangle = false;
 
-        for (int i = 0; i < SAMPLE_SIZE && !(hasCircle && hasRectangle && hasTriangle); ++i)
+        for (int j = 0; j < SAMPLE_SIZE && !(hasCircle && hasRectangle && hasTriangle); ++j)
         {
             std::unique_ptr<Figure> figure = factory.create();
             REQUIRE(figure != nullptr);
@@ -105,7 +105,7 @@ TEST_CASE("Factory generates figures with approximately uniform distribution")
         int rectangleCount = 0;
         int triangleCount = 0;
 
-        for (int i = 0; i < LARGE_SAMPLE; ++i)
+        for (int j = 0; j < LARGE_SAMPLE; ++j)
         {
             std::unique_ptr<Figure> figure = factory.create();
             REQUIRE(figure != nullptr);
@@ -214,7 +214,7 @@ TEST_CASE("Figures with variety of values are generated")
         RandomFigureFactory factory;
         std::vector<double> perimeters;
 
-        for (int i = 0; i < LARGE_SAMPLE; ++i)
+        for (int j = 0; j < LARGE_SAMPLE; ++j)
         {
             const std::unique_ptr<Figure> figure = factory.create();
             perimeters.push_back(figure->perimeter());

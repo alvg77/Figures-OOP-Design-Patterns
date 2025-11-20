@@ -8,7 +8,7 @@ void Rectangle::validateDimension(const double value, const std::string &name)
 {
     if (value <= 0 || !std::isfinite(value))
     {
-        throw std::invalid_argument(name + "must be a positive number");
+        throw std::invalid_argument("'" + name + "' must be a finite positive value");
     }
 }
 
@@ -19,7 +19,7 @@ Rectangle::Rectangle(const double width, const double height) : width(width), he
 
     if (!std::isfinite(Rectangle::perimeter()))
     {
-        throw std::invalid_argument("perimeter must be a positive number");
+        throw std::invalid_argument("Perimeter must be a finite positive value");
     }
 }
 

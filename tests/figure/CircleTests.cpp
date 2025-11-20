@@ -7,7 +7,6 @@
 
 #include "../../src/figure/circle/Circle.hpp"
 
-
 constexpr double TOLERANCE = 1e-10;
 
 struct CircleParams
@@ -55,36 +54,36 @@ TEST_CASE("clone creates independent copy")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative radius")
+TEST_CASE("Constructor rejects invalid radius values")
 {
-    REQUIRE_THROWS_AS(Circle(-1), std::invalid_argument);
-}
+    SECTION("Negative")
+    {
+        REQUIRE_THROWS_WITH(Circle(-1), "Radius must be a finite positive value");
+    }
 
-TEST_CASE("Constructor rejects zero radius")
-{
-    REQUIRE_THROWS_AS(Circle(0), std::invalid_argument);
-}
+    SECTION("Zero")
+    {
+        REQUIRE_THROWS_WITH(Circle(0), "Radius must be a finite positive value");
+    }
 
-TEST_CASE("Constructor rejects NaN value")
-{
-    REQUIRE_THROWS_AS(Circle(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
-}
+    SECTION("NaN")
+    {
+        REQUIRE_THROWS_WITH(Circle(std::numeric_limits<double>::quiet_NaN()), "Radius must be a finite positive value");
+    }
 
-TEST_CASE("Constructor rejects infinite values")
-{
     SECTION("Positive infinity")
     {
-        REQUIRE_THROWS_AS(Circle(std::numeric_limits<double>::infinity()), std::invalid_argument);
+        REQUIRE_THROWS_WITH(Circle(std::numeric_limits<double>::infinity()), "Radius must be a finite positive value");
     }
 
     SECTION("Negative infinity")
     {
-        REQUIRE_THROWS_AS(Circle(-std::numeric_limits<double>::infinity()), std::invalid_argument);
+        REQUIRE_THROWS_WITH(Circle(-std::numeric_limits<double>::infinity()), "Radius must be a finite positive value");
     }
 }
 
-TEST_CASE("Constructor detects arithmetic overflow")
+TEST_CASE("Constructor detects arithmetic overflow of perimeter")
 {
     constexpr double large = std::numeric_limits<double>::max();
-    REQUIRE_THROWS_AS(Circle(large), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Circle(large), "Perimeter must be a finite positive value");
 }

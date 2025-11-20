@@ -9,7 +9,7 @@ void Triangle::validate_side(const double side, const std::string &name)
 {
     if (side <= 0 || !std::isfinite(side))
     {
-        throw std::invalid_argument(name + "must be a positive finite value");
+        throw std::invalid_argument("'" + name + "' must be a finite positive value");
     }
 }
 
@@ -30,7 +30,7 @@ Triangle::Triangle(const double a, const double b, const double c) : a(a), b(b),
 
     if (!std::isfinite(Triangle::perimeter()))
     {
-        throw std::invalid_argument("Cannot calculate perimeter");
+        throw std::invalid_argument("Perimeter must be a finite positive value");
     }
 }
 

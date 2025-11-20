@@ -57,36 +57,34 @@ TEST_CASE("clone creates independent copy")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative dimensions")
+TEST_CASE("Constructor rejects negative and zero dimensions")
 {
-    auto [width, height] = GENERATE(values<RectangleParams>({{-1, 1}, {1, -1}, {-1, -1}}));
+    auto [params, err] =
+        GENERATE(table<RectangleParams, std::string>({{{-1, 1}, "'width' must be a finite positive value"},
+                                                      {{1, -1}, "'height' must be a finite positive value"},
+                                                      {{-1, -1}, "'width' must be a finite positive value"},
+                                                      {{0, 1}, "'width' must be a finite positive value"},
+                                                      {{1, 0}, "'height' must be a finite positive value"},
+                                                      {{0, -1}, "'width' must be a finite positive value"}}));
 
-    CAPTURE(width, height);
+    CAPTURE(params.width, params.height);
 
-    REQUIRE_THROWS_AS(Rectangle(width, height), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Rectangle(params.width, params.height), err);
 }
 
-TEST_CASE("Constructor rejects zero dimensions", "[rectangle][validation][zero]")
-{
-    auto [width, height] = GENERATE(values<RectangleParams>({{0, 1}, {1, 0}}));
-
-    CAPTURE(width, height);
-
-    REQUIRE_THROWS_AS(Rectangle(width, height), std::invalid_argument);
-}
-
-TEST_CASE("Constructor rejects NaN values", "[rectangle][validation][nan]")
+TEST_CASE("Constructor rejects NaN values")
 {
     const auto side = GENERATE(0, 1);
-    std::array<double, 2> dimensions = {1, 1};
+    double dimensions[] = {1, 1};
+    const std::string errMessages[] = {"'width' must be a finite positive value", "'height' must be a finite positive value"};
     dimensions[side] = std::numeric_limits<double>::quiet_NaN();
 
     CAPTURE(side, dimensions);
 
-    REQUIRE_THROWS_AS(Rectangle(dimensions[0], dimensions[1]), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Rectangle(dimensions[0], dimensions[1]), errMessages[side]);
 }
 
-TEST_CASE("Constructor rejects infinite values", "[rectangle][validation][infinity]")
+TEST_CASE("Constructor rejects infinite values")
 {
     auto [value, side] = GENERATE(table<double, unsigned>({{std::numeric_limits<double>::infinity(), 0},
                                                            {std::numeric_limits<double>::infinity(), 1},
@@ -94,15 +92,16 @@ TEST_CASE("Constructor rejects infinite values", "[rectangle][validation][infini
                                                            {-std::numeric_limits<double>::infinity(), 1}}));
 
     std::array<double, 2> dimensions = {1, 1};
+    const std::string errMessages[] = {"'width' must be a finite positive value", "'height' must be a finite positive value"};
     dimensions[side] = value;
 
     CAPTURE(side, dimensions);
 
-    REQUIRE_THROWS_AS(Rectangle(dimensions[0], dimensions[1]), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Rectangle(dimensions[0], dimensions[1]), errMessages[side]);
 }
 
-TEST_CASE("Constructor detects arithmetic overflow")
+TEST_CASE("Constructor detects arithmetic overflow of perimeter")
 {
     constexpr double large = std::numeric_limits<double>::max() / 2;
-    REQUIRE_THROWS_AS(Rectangle(large, large), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Rectangle(large, large), "Perimeter must be a finite positive value");
 }

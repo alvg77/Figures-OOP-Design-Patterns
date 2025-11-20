@@ -32,7 +32,11 @@ std::unique_ptr<Figure> StreamFigureFactory::create()
     for (unsigned i = 0; i < paramN; i++)
     {
         std::string value;
-        input >> value;
+        if (!(input >> value))
+        {
+            throw std::runtime_error("Cannot read from input stream!");
+        }
+
         sstream << ' ';
         sstream << value;
     }

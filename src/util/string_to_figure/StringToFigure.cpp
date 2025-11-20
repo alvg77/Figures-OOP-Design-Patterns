@@ -24,6 +24,10 @@ std::unique_ptr<Figure> StringToFigure::createFigure(const std::string &represen
     std::string temp;
     while (sstream >> temp)
     {
+        if (!isDouble(temp))
+        {
+            throw std::invalid_argument("'" + temp + "' is not a double");
+        }
         params.push_back(std::stod(temp));
     }
 

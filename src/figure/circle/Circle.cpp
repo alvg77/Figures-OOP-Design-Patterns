@@ -8,7 +8,7 @@ void Circle::validateRadius(const double radius)
 {
     if (radius <= 0 || !std::isfinite(radius))
     {
-        throw std::invalid_argument("Radius must be a positive number");
+        throw std::invalid_argument("Radius must be a finite positive value");
     }
 }
 
@@ -18,7 +18,7 @@ Circle::Circle(const double radius) : radius(radius)
 
     if (!std::isfinite(Circle::perimeter()))
     {
-        throw std::invalid_argument("Perimeter must be a positive number");
+        throw std::invalid_argument("Perimeter must be a finite positive value");
     }
 }
 

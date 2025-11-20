@@ -15,13 +15,8 @@ struct TriangleParams
 TEST_CASE("Valid triangles produce correct perimeter calculation")
 {
     auto [params, expected] = GENERATE(table<TriangleParams, double>(
-        {{{3, 4, 5}, 12.0},
-            {{15, 25, 35}, 75.0},
-            {{7, 7, 7}, 21.0},
-            {{5, 5, 8}, 18.0},
-            {{0.1, 0.2, 0.25}, 0.55}}));
+        {{{3, 4, 5}, 12.0}, {{15, 25, 35}, 75.0}, {{7, 7, 7}, 21.0}, {{5, 5, 8}, 18.0}, {{0.1, 0.2, 0.25}, 0.55}}));
 
-    CAPTURE(params.a, params.b, params.c, expected);
     CAPTURE(params.a, params.b, params.c, expected);
 
     const Triangle triangle(params.a, params.b, params.c);
@@ -68,22 +63,19 @@ TEST_CASE("clone creates independent copy")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative side lengths")
+TEST_CASE("Constructor rejects negative and zero side lengths")
 {
-    auto [a, b, c] = GENERATE(values<TriangleParams>({{-1, 2, 3}, {1, -2, 3}, {1, 2, -3}}));
+    auto [params, err] =
+        GENERATE(table<TriangleParams, std::string>({{{-1, 2, 3}, "'a' must be a finite positive value"},
+                                                     {{1, -2, 3}, "'b' must be a finite positive value"},
+                                                     {{1, 2, -3}, "'c' must be a finite positive value"},
+                                                     {{0, 2, 3}, "'a' must be a finite positive value"},
+                                                     {{1, 0, 3}, "'b' must be a finite positive value"},
+                                                     {{1, 2, 0}, "'c' must be a finite positive value"}}));
 
-    CAPTURE(a, b, c);
+    CAPTURE(params.a, params.b, params.c);
 
-    REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
-}
-
-TEST_CASE("Constructor rejects zero side lengths")
-{
-    auto [a, b, c] = GENERATE(values<TriangleParams>({{0, 2, 3}, {1, 0, 3}, {1, 2, 0}}));
-
-    CAPTURE(a, b, c);
-
-    REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Triangle(params.a, params.b, params.c), err);
 }
 
 TEST_CASE("Constructor enforces triangle inequality")
@@ -92,7 +84,7 @@ TEST_CASE("Constructor enforces triangle inequality")
 
     CAPTURE(a, b, c);
 
-    REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Triangle(a, b, c), "No triangle with such sides exist!");
 }
 
 TEST_CASE("Constructor rejects NaN values")
@@ -100,42 +92,36 @@ TEST_CASE("Constructor rejects NaN values")
     constexpr double nan = std::numeric_limits<double>::quiet_NaN();
 
     const int side = GENERATE(0, 1, 2);
-    std::array<double, 3> sides = {1, 1, 1};
+    double sides[] = {1, 1, 1};
+    const std::string errMessages[] = {"'a' must be a finite positive value", "'b' must be a finite positive value",
+                                       "'c' must be a finite positive value"};
     sides[side] = nan;
 
     CAPTURE(side, sides);
 
-    REQUIRE_THROWS_AS(Triangle(sides[0], sides[1], sides[2]), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Triangle(sides[0], sides[1], sides[2]), errMessages[side]);
 }
 
 TEST_CASE("Constructor rejects infinite values")
 {
     auto [value, side] = GENERATE(table<double, unsigned>({{std::numeric_limits<double>::infinity(), 0},
-                                                          {std::numeric_limits<double>::infinity(), 1},
-                                                          {std::numeric_limits<double>::infinity(), 2},
-                                                          {-std::numeric_limits<double>::infinity(), 0},
-                                                          {-std::numeric_limits<double>::infinity(), 1},
-                                                          {-std::numeric_limits<double>::infinity(), 2}}));
+                                                           {std::numeric_limits<double>::infinity(), 1},
+                                                           {std::numeric_limits<double>::infinity(), 2},
+                                                           {-std::numeric_limits<double>::infinity(), 0},
+                                                           {-std::numeric_limits<double>::infinity(), 1},
+                                                           {-std::numeric_limits<double>::infinity(), 2}}));
 
     std::array<double, 3> sides = {1, 1, 1};
     sides[side] = value;
-
+    const std::string errMessages[] = {"'a' must be a finite positive value", "'b' must be a finite positive value",
+                                           "'c' must be a finite positive value"};
     CAPTURE(side, sides);
 
-    REQUIRE_THROWS_AS(Triangle(sides[0], sides[1], sides[2]), std::invalid_argument);
+    REQUIRE_THROWS_WITH(Triangle(sides[0], sides[1], sides[2]), errMessages[side]);
 }
 
-TEST_CASE("Constructor detects arithmetic overflow")
+TEST_CASE("Constructor detects arithmetic overflow of perimeter")
 {
-    SECTION("Three sides causing overflow")
-    {
-        constexpr double large = std::numeric_limits<double>::max() / 2;
-        REQUIRE_THROWS_AS(Triangle(large, large, large), std::invalid_argument);
-    }
-
-    SECTION("Two sides causing overflow")
-    {
-        constexpr double max_val = std::numeric_limits<double>::max();
-        REQUIRE_THROWS_AS(Triangle(max_val, max_val, 1), std::invalid_argument);
-    }
+    constexpr double large = std::numeric_limits<double>::max() / 2;
+    REQUIRE_THROWS_WITH(Triangle(large, large, large), "Perimeter must be a finite positive value");
 }

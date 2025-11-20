@@ -10,7 +10,7 @@
 #include <iostream>
 #include <oneapi/tbb/info.h>
 
-TEST_CASE("StringToFigure::createFigure creates valid Triangle")
+TEST_CASE("createFigure creates valid Triangle")
 {
     SECTION("Lowercase triangle")
     {
@@ -114,38 +114,32 @@ TEST_CASE("createFigure throws on invalid parameter count")
 {
     SECTION("Triangle with too few parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("triangle 3.0 4.0"), std::invalid_argument);
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 4.0"), "Triangle requires three parameters");
     }
 
     SECTION("Triangle with too many parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("triangle 3.0 4.0 5.0 6.0"), std::invalid_argument);
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 4.0 5.0 6.0"),
                             "Triangle requires three parameters");
     }
 
     SECTION("Circle with too few parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle"), std::invalid_argument);
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle"), "Circle requires one parameter");
     }
 
     SECTION("Circle with too many parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle 5.0 6.0"), std::invalid_argument);
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle 5.0 6.0"), "Circle requires one parameter");
     }
 
     SECTION("Rectangle with too few parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 4.0"), std::invalid_argument);
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0"), "Rectangle requires two parameters");
     }
 
     SECTION("Rectangle with too many parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 4.0 6.0 8.0"), std::invalid_argument);
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 6.0 8.0"),
                             "Rectangle requires two parameters");
     }
@@ -178,17 +172,18 @@ TEST_CASE("createFigure throws on invalid numeric parameters")
 {
     SECTION("Non-numeric parameter for triangle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("triangle 3.0 abc 5.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 abc 5.0"), "'abc' is not a double");
     }
 
     SECTION("Non-numeric parameter for circle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle xyz"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle xyz"), "'xyz' is not a double");
+
     }
 
     SECTION("Non-numeric parameter for rectangle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 4.0 notanumber"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 notanumber"), "'notanumber' is not a double");
     }
 }
 
@@ -196,12 +191,12 @@ TEST_CASE("createFigure handles negative and zero values")
 {
     SECTION("Negative parameter for circle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle -5.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle -5.0"), "Radius must be a positive number");
     }
 
     SECTION("Zero parameter for rectangle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 0.0 5.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 0.0 5.0"), "'width' must be a positive number");
     }
 }
 

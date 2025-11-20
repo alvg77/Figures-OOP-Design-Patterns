@@ -21,7 +21,7 @@ FigureUtil::FigureType FigureUtil::strToFigure(const std::string &str)
         return RECTANGLE;
     }
 
-    throw std::invalid_argument("Invalid figure type");
+    throw std::invalid_argument("Invalid figure type: '" + str + "'");
 }
 
 unsigned FigureUtil::getFigureParams(const FigureType type)

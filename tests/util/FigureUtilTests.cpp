@@ -6,6 +6,8 @@
 
 #include "../../src/util/figure_util/FigureUtil.hpp"
 
+#include <iostream>
+
 constexpr int SAMPLE_SIZE = 100;
 
 TEST_CASE("Valid strings convert to correct figure types")
@@ -28,13 +30,18 @@ TEST_CASE("Valid strings convert to correct figure types")
 
 TEST_CASE("strToFigure rejects invalid strings")
 {
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure("invalid"), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure(""), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure("Triangle"), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure("CIRCLE"), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure(" rectangle"), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure("circle "), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure("asfd1@#%12asdfa1ef42314f"), std::invalid_argument);
+    const std::string str = GENERATE(
+        "invalid",
+        "",
+        "Triangle",
+        "CIRCLE",
+        "   rectangle",
+        "circle   ",
+        "asy9h237@@f23"
+    );
+
+    REQUIRE_THROWS_WITH(FigureUtil::strToFigure(str),
+                        "Invalid figure type: '" + str + "'");
 }
 
 TEST_CASE("Figure types return correct parameter counts")

@@ -62,7 +62,7 @@ TEST_CASE("Throws exception for 'file' without filename or with many filenames")
 
     CAPTURE(input);
 
-    REQUIRE_THROWS_AS(AbstractFactory::getFactory(input), std::invalid_argument);
+    REQUIRE_THROWS_WITH(AbstractFactory::getFactory(input), "Invalid number of arguments for 'file' choice");
 }
 
 TEST_CASE("Throws exception for unrecognized input type")
@@ -70,5 +70,5 @@ TEST_CASE("Throws exception for unrecognized input type")
     std::vector<std::string> input =
         GENERATE(values<std::vector<std::string>>({{"asfaslhj"}, {"asdf", "asdf", "asdf"}}));
 
-    REQUIRE_THROWS_AS(AbstractFactory::getFactory(input), std::invalid_argument);
+    REQUIRE_THROWS_WITH(AbstractFactory::getFactory(input), "Invalid input");
 }

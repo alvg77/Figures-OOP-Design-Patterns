@@ -27,7 +27,7 @@ std::unique_ptr<FigureFactory> AbstractFactory::getFactory(std::vector<std::stri
     {
         if (inputType.size() != 2)
         {
-            throw std::invalid_argument("Invalid input");
+            throw std::invalid_argument("Invalid number of arguments for 'file' choice");
         }
         return std::make_unique<StreamFigureFactory>(std::make_unique<std::ifstream>(inputType.at(1)));
     }
