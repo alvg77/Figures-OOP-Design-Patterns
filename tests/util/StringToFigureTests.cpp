@@ -236,21 +236,21 @@ TEST_CASE("createFigure handles decimal values", "[StringToFigure]")
 {
     SECTION("Triangle with decimal values")
     {
-        auto figure = StringToFigure::createFigure("triangle 3.5 4.7 5.9");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("triangle 3.5 4.7 5.9");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Circle with decimal value")
     {
-        auto figure = StringToFigure::createFigure("circle 2.71828");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("circle 2.71828");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 
     SECTION("Rectangle with decimal values")
     {
-        auto figure = StringToFigure::createFigure("rectangle 1.414 2.718");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("rectangle 1.414 2.718");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
     }
