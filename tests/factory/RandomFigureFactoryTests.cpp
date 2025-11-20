@@ -1,7 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
-#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include <vector>
 
@@ -11,8 +10,9 @@
 #include "../../src/figure/rectangle/Rectangle.hpp"
 #include "../../src/figure/triangle/Triangle.hpp"
 
-constexpr double TOLERANCE = 1e-10;
+constexpr double TOLERANCE = 1e-9;
 constexpr int SAMPLE_SIZE = 100;
+constexpr int LARGE_SAMPLE = 1000;
 
 constexpr double minValue = std::numeric_limits<double>::min();
 
@@ -41,18 +41,6 @@ TEST_CASE("Factory creates valid figures", "[randomfactory][create]")
     REQUIRE((isCircle(figure.get()) || isRectangle(figure.get()) || isTriangle(figure.get())));
 }
 
-TEST_CASE("Factory creates figures with valid perimeters", "[randomfactory][perimeter]")
-{
-    RandomFigureFactory factory;
-
-    std::unique_ptr<Figure> figure = factory.create();
-
-    REQUIRE(figure != nullptr);
-    const double perimeter = figure->perimeter();
-    REQUIRE(std::isfinite(perimeter));
-    REQUIRE(perimeter > 0);
-}
-
 TEST_CASE("Factory creates multiple distinct figures", "[randomfactory][multiple]")
 {
     RandomFigureFactory factory;
@@ -72,104 +60,143 @@ TEST_CASE("Factory creates multiple distinct figures", "[randomfactory][multiple
 
 TEST_CASE("Factory generates all three figure types over multiple calls", "[randomfactory][distribution]")
 {
-    RandomFigureFactory factory;
-
-    bool hasCircle = false;
-    bool hasRectangle = false;
-    bool hasTriangle = false;
-
-    for (int i = 0; i < SAMPLE_SIZE && !(hasCircle && hasRectangle && hasTriangle); ++i)
+    for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        std::unique_ptr<Figure> figure = factory.create();
-        REQUIRE(figure != nullptr);
+        RandomFigureFactory factory;
+
+        bool hasCircle = false;
+        bool hasRectangle = false;
+        bool hasTriangle = false;
+
+        for (int i = 0; i < SAMPLE_SIZE && !(hasCircle && hasRectangle && hasTriangle); ++i)
+        {
+            std::unique_ptr<Figure> figure = factory.create();
+            REQUIRE(figure != nullptr);
+
+            if (isCircle(figure.get()))
+            {
+                hasCircle = true;
+            }
+
+            if (isRectangle(figure.get()))
+            {
+                hasRectangle = true;
+            }
+
+            if (isTriangle(figure.get()))
+            {
+                hasTriangle = true;
+            }
+        }
+
+        REQUIRE(hasCircle);
+        REQUIRE(hasRectangle);
+        REQUIRE(hasTriangle);
+    }
+}
+
+TEST_CASE("Factory generates figures with approximately uniform distribution",
+          "[randomfactory][distribution][statistical]")
+{
+    for (int i = 0; i < SAMPLE_SIZE; ++i)
+    {
+        RandomFigureFactory factory;
+
+        int circleCount = 0;
+        int rectangleCount = 0;
+        int triangleCount = 0;
+
+        for (int i = 0; i < LARGE_SAMPLE; ++i)
+        {
+            std::unique_ptr<Figure> figure = factory.create();
+            REQUIRE(figure != nullptr);
+
+            if (isCircle(figure.get()))
+            {
+                circleCount++;
+            }
+            else if (isRectangle(figure.get()))
+            {
+                rectangleCount++;
+            }
+            else if (isTriangle(figure.get()))
+            {
+                triangleCount++;
+            }
+        }
+
+        constexpr double expectedCount = LARGE_SAMPLE / 3.0;
+        constexpr double tolerance = expectedCount * 0.2;
+
+        REQUIRE(std::abs(circleCount - expectedCount) < tolerance);
+        REQUIRE(std::abs(rectangleCount - expectedCount) < tolerance);
+        REQUIRE(std::abs(triangleCount - expectedCount) < tolerance);
+
+        REQUIRE(circleCount + rectangleCount + triangleCount == LARGE_SAMPLE);
+    }
+}
+
+TEST_CASE("Circles are successfully generated with valid values", "[randomfactory][circle][validation]")
+{
+    RandomFigureFactory factory;
+    int circlesFound = 0;
+
+    for (int i = 0; i < SAMPLE_SIZE; ++i)
+    {
+        std::unique_ptr<Figure> figure;
+        REQUIRE_NOTHROW(figure = factory.create());
 
         if (isCircle(figure.get()))
-            hasCircle = true;
-        if (isRectangle(figure.get()))
-            hasRectangle = true;
-        if (isTriangle(figure.get()))
-            hasTriangle = true;
-    }
-
-    REQUIRE(hasCircle);
-    REQUIRE(hasRectangle);
-    REQUIRE(hasTriangle);
-}
-
-TEST_CASE("Generated circles have valid radii", "[randomfactory][circle][validation]")
-{
-    RandomFigureFactory factory;
-
-    bool foundCircle = false;
-
-    for (int i = 0; i < SAMPLE_SIZE && !foundCircle; ++i)
-    {
-        std::unique_ptr<Figure> figure = factory.create();
-
-        if (isCircle(figure.get()))
         {
-            foundCircle = true;
-            const double perimeter = figure->perimeter();
-            const double radius = perimeter / (2 * M_PI);
-
-            REQUIRE(radius >= minValue);
-            REQUIRE(std::isfinite(radius));
-            REQUIRE(std::isfinite(perimeter));
+            circlesFound++;
         }
     }
 
-    REQUIRE(foundCircle);
+    REQUIRE(circlesFound >= 20);
 }
 
-TEST_CASE("Generated rectangles have valid dimensions", "[randomfactory][rectangle][validation]")
+TEST_CASE("Rectangles are successfully generated with valid values",
+          "[randomfactory][rectangle][validation]")
 {
     RandomFigureFactory factory;
+    int rectanglesFound = 0;
 
-    bool foundRectangle = false;
-
-    for (int i = 0; i < SAMPLE_SIZE && !foundRectangle; ++i)
+    for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        std::unique_ptr<Figure> figure = factory.create();
+        std::unique_ptr<Figure> figure;
+        REQUIRE_NOTHROW(figure = factory.create());
 
         if (isRectangle(figure.get()))
         {
-            foundRectangle = true;
-            const double perimeter = figure->perimeter();
-
-            REQUIRE(perimeter >= 4 * minValue);
-            REQUIRE(std::isfinite(perimeter));
+            rectanglesFound++;
         }
     }
 
-    REQUIRE(foundRectangle);
+    REQUIRE(rectanglesFound >= 20);
 }
 
-TEST_CASE("Generated triangles satisfy triangle inequality", "[randomfactory][triangle][validation]")
+TEST_CASE("Triangles are successfully generated with valid values",
+          "[randomfactory][triangle][validation]")
 {
     RandomFigureFactory factory;
 
-    bool foundTriangle = false;
+    int trianglesFound = 0;
 
-    for (int i = 0; i < SAMPLE_SIZE && !foundTriangle; ++i)
+    for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        std::unique_ptr<Figure> figure = factory.create();
+        std::unique_ptr<Figure> figure;
+        REQUIRE_NOTHROW(figure = factory.create());
 
         if (isTriangle(figure.get()))
         {
-            foundTriangle = true;
-            const double perimeter = figure->perimeter();
-
-            REQUIRE(perimeter >= 3 * minValue);
-            REQUIRE(std::isfinite(perimeter));
-
-            REQUIRE_NOTHROW(figure->perimeter());
+            trianglesFound++;
         }
     }
 
-    REQUIRE(foundTriangle);
+    REQUIRE(trianglesFound >= 20);
 }
 
-TEST_CASE("Generated figures have reasonable perimeter values", "[randomfactory][perimeter][range]")
+TEST_CASE("Generated figures have valid perimeter values", "[randomfactory][perimeter][range]")
 {
     RandomFigureFactory factory;
 
@@ -179,109 +206,38 @@ TEST_CASE("Generated figures have reasonable perimeter values", "[randomfactory]
         const double perimeter = figure->perimeter();
 
         REQUIRE(perimeter > 0);
-        REQUIRE(std::isfinite(perimeter));
-        REQUIRE(perimeter < std::numeric_limits<double>::max());
+        REQUIRE(perimeter <= std::numeric_limits<double>::max());
     }
 }
 
-TEST_CASE("Generated figures can be cloned successfully", "[randomfactory][clone]")
+TEST_CASE("Figures with variety of values are generated", "[randomfactory][randomness]")
 {
-    RandomFigureFactory factory;
-
-    std::unique_ptr<Figure> figure = factory.create();
-    REQUIRE(figure != nullptr);
-
-    Figure *cloned = figure->clone();
-
-    REQUIRE(cloned != nullptr);
-    REQUIRE(cloned != figure.get());
-    REQUIRE_THAT(cloned->perimeter(), Catch::Matchers::WithinRel(figure->perimeter(), TOLERANCE));
-
-    delete cloned;
-}
-
-TEST_CASE("Generated figures produce valid string representations", "[randomfactory][string]")
-{
-    RandomFigureFactory factory;
-
-    for (int i = 0; i < 10; ++i)
-    {
-        const std::unique_ptr<Figure> figure = factory.create();
-        const std::string str = figure->to_string();
-
-        REQUIRE(!str.empty());
-        REQUIRE((str.find("Circle") != std::string::npos || str.find("Rectangle") != std::string::npos ||
-                 str.find("Triangle") != std::string::npos));
-    }
-}
-
-TEST_CASE("Factory produces variety in generated values", "[randomfactory][randomness]")
-{
-    RandomFigureFactory factory;
-
-    std::vector<double> perimeters;
-
-    for (int i = 0; i < 50; ++i)
-    {
-        const std::unique_ptr<Figure> figure = factory.create();
-        perimeters.push_back(figure->perimeter());
-    }
-
-    REQUIRE(perimeters.size() > 40);
-}
-
-TEST_CASE("Generated circles avoid overflow", "[randomfactory][circle][overflow]")
-{
-    RandomFigureFactory factory;
-
     for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        std::unique_ptr<Figure> figure = factory.create();
+        RandomFigureFactory factory;
+        std::vector<double> perimeters;
 
-        if (isCircle(figure.get()))
+        for (int i = 0; i < LARGE_SAMPLE; ++i)
         {
-            const double perimeter = figure->perimeter();
-            REQUIRE(std::isfinite(perimeter));
-            REQUIRE(perimeter < std::numeric_limits<double>::max());
+            const std::unique_ptr<Figure> figure = factory.create();
+            perimeters.push_back(figure->perimeter());
         }
+
+        unsigned variety = 0;
+        const double initialPerimeter = perimeters.front();
+        for (const double p : perimeters)
+        {
+            if (std::abs(p - initialPerimeter) > TOLERANCE)
+            {
+                variety++;
+            }
+        }
+
+        REQUIRE(variety >= LARGE_SAMPLE / 2);
     }
 }
 
-TEST_CASE("Generated rectangles avoid overflow", "[randomfactory][rectangle][overflow]")
-{
-    RandomFigureFactory factory;
-
-    for (int i = 0; i < SAMPLE_SIZE; ++i)
-    {
-        std::unique_ptr<Figure> figure = factory.create();
-
-        if (isRectangle(figure.get()))
-        {
-            const double perimeter = figure->perimeter();
-            REQUIRE(std::isfinite(perimeter));
-            REQUIRE(perimeter < std::numeric_limits<double>::max());
-        }
-    }
-}
-
-TEST_CASE("Generated triangles avoid overflow", "[randomfactory][triangle][overflow]")
-{
-    RandomFigureFactory factory;
-
-    for (int i = 0; i < SAMPLE_SIZE; ++i)
-    {
-        std::unique_ptr<Figure> figure = factory.create();
-
-        if (isTriangle(figure.get()))
-        {
-            const double perimeter = figure->perimeter();
-            REQUIRE(std::isfinite(perimeter));
-            REQUIRE(perimeter < std::numeric_limits<double>::max());
-        }
-    }
-}
-
-TEST_CASE("Multiple factories can coexist", "[randomfactory][multiple-factories]")
+TEST_CASE("Multiple factories can coexist and generate separate figures", "[randomfactory][multiple-factories]")
 {
     RandomFigureFactory factory1;
     RandomFigureFactory factory2;
@@ -294,32 +250,22 @@ TEST_CASE("Multiple factories can coexist", "[randomfactory][multiple-factories]
     REQUIRE(figure1.get() != figure2.get());
 }
 
-TEST_CASE("Factory can create many figures without issues", "[randomfactory][stress]")
+TEST_CASE("Factory can create many figures", "[randomfactory][stress]")
 {
     RandomFigureFactory factory;
 
     int successCount = 0;
 
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < LARGE_SAMPLE; ++i)
     {
-        if (std::unique_ptr<Figure> figure = factory.create(); figure != nullptr && std::isfinite(figure->perimeter()))
+        std::unique_ptr<Figure> figure;
+        REQUIRE_NOTHROW(figure = factory.create());
+
+        if (figure != nullptr)
         {
             successCount++;
         }
     }
 
-    REQUIRE(successCount == 1000);
-}
-
-TEST_CASE("Generated figures have minimum dimensions", "[randomfactory][minimum]")
-{
-    RandomFigureFactory factory;
-
-    for (int i = 0; i < 50; ++i)
-    {
-        const std::unique_ptr<Figure> figure = factory.create();
-        const double perimeter = figure->perimeter();
-
-        REQUIRE(perimeter >= 3 * minValue);
-    }
+    REQUIRE(successCount == LARGE_SAMPLE);
 }

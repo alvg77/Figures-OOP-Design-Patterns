@@ -8,7 +8,7 @@
 class StringToFigure
 {
   public:
-    static std::unique_ptr<Figure> create_figure(const std::string &representation);
+    static std::unique_ptr<Figure> createFigure(const std::string &representation);
     static bool is_double(const std::string &str);
 };
 

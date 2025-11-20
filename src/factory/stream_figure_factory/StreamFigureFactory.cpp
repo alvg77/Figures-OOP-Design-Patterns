@@ -37,5 +37,5 @@ std::unique_ptr<Figure> StreamFigureFactory::create()
         sstream << value;
     }
 
-    return StringToFigure::create_figure(sstream.str());
+    return StringToFigure::createFigure(sstream.str());
 }

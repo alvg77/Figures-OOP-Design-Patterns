@@ -8,217 +8,215 @@
 #include "../../src/util/string_to_figure/StringToFigure.hpp"
 
 #include <iostream>
+#include <oneapi/tbb/info.h>
 
-TEST_CASE("StringToFigure::create_figure creates valid Triangle", "[StringToFigure]")
+TEST_CASE("StringToFigure::createFigure creates valid Triangle", "[StringToFigure]")
 {
     SECTION("Lowercase triangle")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("triangle 3.0 4.0 5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("triangle 3.0 4.0 5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Uppercase TRIANGLE")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("TRIANGLE 3.0 4.0 5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("TRIANGLE 3.0 4.0 5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Mixed case TrIaNgLe")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("TrIaNgLe 3.0 4.0 5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("TrIaNgLe 3.0 4.0 5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Triangle with integer parameters")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("triangle 3 4 5");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("triangle 3 4 5");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Triangle with extra whitespace")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("triangle  3.0   4.0    5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("triangle  3.0   4.0    5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 }
 
-TEST_CASE("create_figure creates valid Circle", "[StringToFigure]")
+TEST_CASE("createFigure creates valid Circle", "[StringToFigure]")
 {
     SECTION("Lowercase circle")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("circle 5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("circle 5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 
     SECTION("Uppercase CIRCLE")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("CIRCLE 5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("CIRCLE 5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 
     SECTION("Mixed case CiRcLe")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("CiRcLe 5.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("CiRcLe 5.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 
     SECTION("Circle with integer parameter")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("circle 5");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("circle 5");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 }
 
-TEST_CASE("create_figure creates valid Rectangle", "[StringToFigure]")
+TEST_CASE("createFigure creates valid Rectangle", "[StringToFigure]")
 {
     SECTION("Lowercase rectangle")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("rectangle 4.0 6.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("rectangle 1.0 2.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Uppercase RECTANGLE")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("RECTANGLE 4.0 6.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("RECTANGLE 1.0 2.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Mixed case ReCtAnGlE")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("ReCtAnGlE 4.0 6.0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("ReCtAnGlE 1.0 2.0");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Rectangle with integer parameters")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("rectangle 4 6");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("rectangle 1 2");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
     }
 }
 
-TEST_CASE("create_figure throws on invalid parameter count", "[StringToFigure]")
+TEST_CASE("createFigure throws on invalid parameter count", "[StringToFigure]")
 {
     SECTION("Triangle with too few parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("triangle 3.0 4.0"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("triangle 3.0 4.0"), "triangle requires three parameters");
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("triangle 3.0 4.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 4.0"), "Triangle requires three parameters");
     }
 
     SECTION("Triangle with too many parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("triangle 3.0 4.0 5.0 6.0"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("triangle 3.0 4.0 5.0 6.0"),
-                            "triangle requires three parameters");
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("triangle 3.0 4.0 5.0 6.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("triangle 3.0 4.0 5.0 6.0"),
+                            "Triangle requires three parameters");
     }
 
     SECTION("Circle with too few parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("circle"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("circle"), "circle requires one parameter");
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle"), "Circle requires one parameter");
     }
 
     SECTION("Circle with too many parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("circle 5.0 6.0"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("circle 5.0 6.0"), "circle requires one parameter");
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle 5.0 6.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle 5.0 6.0"), "Circle requires one parameter");
     }
 
     SECTION("Rectangle with too few parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("rectangle 4.0"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("rectangle 4.0"), "rectangle requires two parameters");
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 4.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0"), "Rectangle requires two parameters");
     }
 
     SECTION("Rectangle with too many parameters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("rectangle 4.0 6.0 8.0"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("rectangle 4.0 6.0 8.0"),
-                            "rectangle requires two parameters");
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 4.0 6.0 8.0"), std::invalid_argument);
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 6.0 8.0"),
+                            "Rectangle requires two parameters");
     }
 }
 
-TEST_CASE("create_figure throws on invalid figure name", "[StringToFigure]")
+TEST_CASE("createFigure throws on invalid figure name", "[StringToFigure]")
 {
     SECTION("Unknown figure name")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("square 5.0"), std::invalid_argument);
-        REQUIRE_THROWS_WITH(StringToFigure::create_figure("square 5.0"), "Invalid figure string");
+        REQUIRE(StringToFigure::createFigure("square 5.0") == nullptr);
     }
 
     SECTION("Empty string")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure(""), std::invalid_argument);
+        REQUIRE(StringToFigure::createFigure("") == nullptr);
     }
 
     SECTION("Only whitespace")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("   "), std::invalid_argument);
+        REQUIRE(StringToFigure::createFigure("   ") == nullptr);
     }
 
     SECTION("Random characters")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("asdfghjkl 1 2 3"), std::invalid_argument);
+        REQUIRE(StringToFigure::createFigure("asdfghjkl 1 2 3") == nullptr);
     }
 }
 
-TEST_CASE("create_figure throws on invalid numeric parameters", "[StringToFigure]")
+TEST_CASE("createFigure throws on invalid numeric parameters", "[StringToFigure]")
 {
     SECTION("Non-numeric parameter for triangle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("triangle 3.0 abc 5.0"), std::invalid_argument);
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("triangle 3.0 abc 5.0"), std::invalid_argument);
     }
 
     SECTION("Non-numeric parameter for circle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("circle xyz"), std::invalid_argument);
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle xyz"), std::invalid_argument);
     }
 
     SECTION("Non-numeric parameter for rectangle")
     {
-        REQUIRE_THROWS_AS(StringToFigure::create_figure("rectangle 4.0 notanumber"), std::invalid_argument);
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 4.0 notanumber"), std::invalid_argument);
     }
 }
 
-TEST_CASE("create_figure handles negative and zero values", "[StringToFigure]")
+TEST_CASE("createFigure handles negative and zero values", "[StringToFigure]")
 {
     SECTION("Negative parameter for circle")
     {
-        auto result = []() { return StringToFigure::create_figure("circle -5.0"); };
-        REQUIRE_THROWS_AS(result(), std::invalid_argument);
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("circle -5.0"), std::invalid_argument);
     }
 
     SECTION("Zero parameter for rectangle")
     {
-        auto result = []() { return StringToFigure::create_figure("rectangle 0.0 5.0"); };
-        REQUIRE_THROWS_AS(result(), std::invalid_argument);
+        REQUIRE_THROWS_AS(StringToFigure::createFigure("rectangle 0.0 5.0"), std::invalid_argument);
     }
 }
 
-TEST_CASE("create_figure handles scientific notation", "[StringToFigure]")
+TEST_CASE("createFigure handles scientific notation", "[StringToFigure]")
 {
     SECTION("Circle with scientific notation")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("circle 1.5e2");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("circle 1.5e2");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 
     SECTION("Triangle with scientific notation")
     {
-        std::unique_ptr<Figure> figure = StringToFigure::create_figure("triangle 3e0 4e0 5e0");
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("triangle 1.5e+10 2.5e+10 3.5e+10");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
@@ -256,25 +254,25 @@ TEST_CASE("is_double validates numeric strings", "[StringToFigure]")
     }
 }
 
-TEST_CASE("create_figure handles decimal values", "[StringToFigure]")
+TEST_CASE("createFigure handles decimal values", "[StringToFigure]")
 {
     SECTION("Triangle with decimal values")
     {
-        auto figure = StringToFigure::create_figure("triangle 3.5 4.7 5.9");
+        auto figure = StringToFigure::createFigure("triangle 3.5 4.7 5.9");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
 
     SECTION("Circle with decimal value")
     {
-        auto figure = StringToFigure::create_figure("circle 2.71828");
+        auto figure = StringToFigure::createFigure("circle 2.71828");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Circle *>(figure.get()) != nullptr);
     }
 
     SECTION("Rectangle with decimal values")
     {
-        auto figure = StringToFigure::create_figure("rectangle 1.414 2.718");
+        auto figure = StringToFigure::createFigure("rectangle 1.414 2.718");
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
     }

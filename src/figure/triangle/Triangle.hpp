@@ -19,7 +19,7 @@ class Triangle final : public Figure
 
     double perimeter() const override;
 
-    std::string to_string() const override;
+    std::string toString() const override;
 
     Triangle *clone() const override;
 };

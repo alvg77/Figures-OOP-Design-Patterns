@@ -18,7 +18,7 @@ class Rectangle final : public Figure
 
     double perimeter() const override;
 
-    std::string to_string() const override;
+    std::string toString() const override;
 
     Rectangle *clone() const override;
 };

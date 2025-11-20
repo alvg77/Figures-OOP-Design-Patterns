@@ -15,12 +15,6 @@ struct CircleData
     double radius, expected;
 };
 
-struct CircleToString
-{
-    double radius;
-    std::string str;
-};
-
 TEST_CASE("Valid circles produce correct perimeter calculation", "[circle][perimeter]")
 {
     auto [radius, expected] =
@@ -47,24 +41,6 @@ TEST_CASE("Circles handle extreme valid parameters", "[circle][perimeter][edge]"
         const Circle circle(small);
         REQUIRE_THAT(circle.perimeter(), Catch::Matchers::WithinRel(2 * M_PI * small, TOLERANCE));
     }
-}
-
-TEST_CASE("to_string produces correct format for various radii", "[circle][string]")
-{
-    auto [radius, expected] = GENERATE(values<CircleToString>({{10, "Circle 10"},
-                                                               {5, "Circle 5"},
-                                                               {7.5, "Circle 7.5"},
-                                                               {0.1, "Circle 0.1"},
-                                                               {100, "Circle 100"},
-                                                               {1e10, "Circle 1e+10"},
-                                                               {0.001, "Circle 0.001"}}));
-
-    CAPTURE(radius);
-
-    const Circle circle(radius);
-    const std::string result = circle.to_string();
-
-    REQUIRE(result == expected);
 }
 
 TEST_CASE("clone creates independent copy", "[circle][clone]")

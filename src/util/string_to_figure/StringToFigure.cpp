@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-std::unique_ptr<Figure> StringToFigure::create_figure(const std::string &representation)
+std::unique_ptr<Figure> StringToFigure::createFigure(const std::string &representation)
 {
     std::stringstream sstream(representation);
 
@@ -31,7 +31,7 @@ std::unique_ptr<Figure> StringToFigure::create_figure(const std::string &represe
     {
         if (params.size() != 3)
         {
-            throw std::invalid_argument("triangle requires three parameters");
+            throw std::invalid_argument("Triangle requires three parameters");
         }
         return std::make_unique<Triangle>(params.at(0), params.at(1), params.at(2));
     }
@@ -40,7 +40,7 @@ std::unique_ptr<Figure> StringToFigure::create_figure(const std::string &represe
     {
         if (params.size() != 1)
         {
-            throw std::invalid_argument("circle requires one parameter");
+            throw std::invalid_argument("Circle requires one parameter");
         }
         return std::make_unique<Circle>(params.at(0));
     }
@@ -49,12 +49,12 @@ std::unique_ptr<Figure> StringToFigure::create_figure(const std::string &represe
     {
         if (params.size() != 2)
         {
-            throw std::invalid_argument("rectangle requires two parameters");
+            throw std::invalid_argument("Rectangle requires two parameters");
         }
         return std::make_unique<Rectangle>(params.at(0), params.at(1));
     }
 
-    throw std::invalid_argument("Invalid figure string");
+    return nullptr;
 }
 
 bool StringToFigure::is_double(const std::string &str)

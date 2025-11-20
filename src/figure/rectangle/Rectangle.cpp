@@ -28,7 +28,7 @@ double Rectangle::perimeter() const
     return 2 * width + 2 * height;
 }
 
-std::string Rectangle::to_string() const
+std::string Rectangle::toString() const
 {
     std::stringstream sstream;
     sstream << "Rectangle " << width << " " << height;

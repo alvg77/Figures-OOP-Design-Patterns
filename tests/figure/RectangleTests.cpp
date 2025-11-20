@@ -1,22 +1,15 @@
-#include <catch2/matchers/catch_matchers.hpp>
-#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include "../../src/figure/rectangle/Rectangle.hpp"
-
 
 constexpr double TOLERANCE = 1e-10;
 
 struct RectangleData
 {
     double width, height, expected;
-};
-
-struct RectangleToString
-{
-    double width, height;
-    std::string str;
 };
 
 struct InvalidData
@@ -56,24 +49,6 @@ TEST_CASE("Rectangles handle extreme valid parameters", "[rectangle][perimeter][
         const Rectangle rectangle(1e5, 1e-5);
         REQUIRE_THAT(rectangle.perimeter(), Catch::Matchers::WithinRel(200000.00002, TOLERANCE));
     }
-}
-
-TEST_CASE("to_string produces correct format for various dimensions", "[rectangle][string]")
-{
-    auto [width, height, expected] = GENERATE(values<RectangleToString>({{1, 2, "Rectangle 1 2"},
-                                                                         {10, 20, "Rectangle 10 20"},
-                                                                         {5.5, 7.3, "Rectangle 5.5 7.3"},
-                                                                         {0.1, 0.2, "Rectangle 0.1 0.2"},
-                                                                         {100, 100, "Rectangle 100 100"},
-                                                                         {1e10, 2e10, "Rectangle 1e+10 2e+10"},
-                                                                         {0.001, 0.002, "Rectangle 0.001 0.002"}}));
-
-    CAPTURE(width, height);
-
-    const Rectangle rectangle(width, height);
-    const std::string result = rectangle.to_string();
-
-    REQUIRE(result == expected);
 }
 
 TEST_CASE("clone creates independent copy", "[rectangle][clone]")

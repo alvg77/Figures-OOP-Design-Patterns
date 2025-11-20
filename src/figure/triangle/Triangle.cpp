@@ -39,7 +39,7 @@ double Triangle::perimeter() const
     return a + b + c;
 }
 
-std::string Triangle::to_string() const
+std::string Triangle::toString() const
 {
     std::stringstream sstream;
     sstream << "Triangle " << a << " " << b << " " << c;

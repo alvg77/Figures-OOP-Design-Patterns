@@ -74,17 +74,19 @@ void Application::loadFigures()
 
 void Application::menu()
 {
-    std::cout << "1. Display all figures\n";
-    std::cout << "2. Clone a figure\n";
-    std::cout << "3. Save figures to file\n";
-    std::cout << "4. Delete figure\n";
-    std::cout << "5. Quit\n";
-
     int input;
     bool quit = false;
     while (!quit)
     {
+        std::cout << "1. Display all figures\n";
+        std::cout << "2. Clone a figure\n";
+        std::cout << "3. Save figures to file\n";
+        std::cout << "4. Delete figure\n";
+        std::cout << "5. Quit\n";
+
         std::cin >> input;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
 
         switch (input)
         {
@@ -105,16 +107,20 @@ void Application::menu()
             break;
         default:
             std::cout << "\nInvalid input. Please try again.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
 }
 
 void Application::displayFigures() const
 {
+    std::cout << "------------------------\n";
     for (unsigned i = 0; i < figures.size(); i++)
     {
         std::cout << i << ". " << *figures[i];
     }
+    std::cout << "------------------------\n";
 }
 
 void Application::cloneFigure()

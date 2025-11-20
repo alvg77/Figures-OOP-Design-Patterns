@@ -27,7 +27,7 @@ double Circle::perimeter() const
     return 2 * M_PI * radius;
 }
 
-std::string Circle::to_string() const
+std::string Circle::toString() const
 {
     std::stringstream sstream;
     sstream << "Circle " << radius;

@@ -39,7 +39,7 @@ TEST_CASE("Valid figures are created correctly from stream", "[streamfactory][cr
     auto figure = factory.create();
 
     REQUIRE(figure != nullptr);
-    REQUIRE(figure->to_string().find(expectedType) != std::string::npos);
+    REQUIRE(figure->toString().find(expectedType) != std::string::npos);
     REQUIRE_THAT(figure->perimeter(), Catch::Matchers::WithinRel(expectedPerimeter, TOLERANCE));
 }
 

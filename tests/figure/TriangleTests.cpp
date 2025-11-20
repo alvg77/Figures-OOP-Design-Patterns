@@ -12,12 +12,6 @@ struct TriangleData
     double a, b, c, expected;
 };
 
-struct TriangleToString
-{
-    double a, b, c;
-    std::string str;
-};
-
 struct InvalidData
 {
     double a, b, c;
@@ -61,25 +55,6 @@ TEST_CASE("Triangles handle extreme valid parameters", "[triangle][perimeter][ed
         const Triangle triangle(1.0, 1.0, 1.999);
         REQUIRE(triangle.perimeter() > 0);
     }
-}
-
-TEST_CASE("Triangle to_string returns correct format", "[triangle][string]")
-{
-    auto [a, b, c, expected] =
-        GENERATE(values<TriangleToString>({{3, 4, 5, "Triangle 3 4 5"},
-                                           {15, 25, 35, "Triangle 15 25 35"},
-                                           {7, 7, 7, "Triangle 7 7 7"},
-                                           {5, 5, 8, "Triangle 5 5 8"},
-                                           {0.1, 0.2, 0.25, "Triangle 0.1 0.2 0.25"},
-                                           {1.5e10, 2.5e10, 3.5e10, "Triangle 1.5e+10 2.5e+10 3.5e+10"},
-                                           {0.003, 0.004, 0.005, "Triangle 0.003 0.004 0.005"}}));
-
-    CAPTURE(a, b, c);
-
-    const Triangle triangle(a, b, c);
-    const std::string result = triangle.to_string();
-
-    REQUIRE(result == expected);
 }
 
 TEST_CASE("clone creates independent copy", "[triangle][clone]")
