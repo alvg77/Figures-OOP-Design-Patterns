@@ -50,7 +50,7 @@ void Application::loadFigures()
     int n;
     do
     {
-        std::cout << "\nSelect number of figures: ";
+        std::cout << "\nSelect number of figures - n (if you enter more figures than n, only the first n of them will be processed): ";
         std::cin >> n;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -69,6 +69,13 @@ void Application::loadFigures()
         }
         figures.push_back(std::move(figure));
     }
+
+    if (splitInputs[0] == "stdin")
+    {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
     std::cout << "\n---Figures created---\n";
 }
 
