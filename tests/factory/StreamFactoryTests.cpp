@@ -18,7 +18,7 @@ struct ValidFigureData
     double expectedPerimeter;
 };
 
-TEST_CASE("Valid figures are created correctly from stream", "[streamfactory][create]")
+TEST_CASE("Valid figures are created correctly from stream")
 {
     auto [input, expectedType, expectedPerimeter] =
         GENERATE(values<ValidFigureData>({{"circle 5", "Circle", 10.0 * M_PI},
@@ -43,7 +43,7 @@ TEST_CASE("Valid figures are created correctly from stream", "[streamfactory][cr
     REQUIRE_THAT(figure->perimeter(), Catch::Matchers::WithinRel(expectedPerimeter, TOLERANCE));
 }
 
-TEST_CASE("Factory handles case-insensitive figure names", "[streamfactory][case]")
+TEST_CASE("Factory handles case-insensitive figure names")
 {
     SECTION("Lowercase circle")
     {
@@ -76,7 +76,7 @@ TEST_CASE("Factory handles case-insensitive figure names", "[streamfactory][case
     }
 }
 
-TEST_CASE("Factory handles decimal parameters", "[streamfactory][decimal]")
+TEST_CASE("Factory handles decimal parameters")
 {
     SECTION("Circle with decimal radius")
     {
@@ -107,7 +107,7 @@ TEST_CASE("Factory handles decimal parameters", "[streamfactory][decimal]")
     }
 }
 
-TEST_CASE("Factory returns nullptr on empty stream", "[streamfactory][empty]")
+TEST_CASE("Factory returns nullptr on empty stream")
 {
     auto stream = std::make_unique<std::istringstream>("");
     StreamFigureFactory factory(std::move(stream));
@@ -117,7 +117,7 @@ TEST_CASE("Factory returns nullptr on empty stream", "[streamfactory][empty]")
     REQUIRE(figure == nullptr);
 }
 
-TEST_CASE("Factory returns nullptr on whitespace-only stream", "[streamfactory][empty]")
+TEST_CASE("Factory returns nullptr on whitespace-only stream")
 {
     auto stream = std::make_unique<std::istringstream>("   \n\t  ");
     StreamFigureFactory factory(std::move(stream));
@@ -127,7 +127,7 @@ TEST_CASE("Factory returns nullptr on whitespace-only stream", "[streamfactory][
     REQUIRE(figure == nullptr);
 }
 
-TEST_CASE("Factory handles multiple figures from same stream", "[streamfactory][multiple]")
+TEST_CASE("Factory handles multiple figures from same stream")
 {
     auto stream = std::make_unique<std::istringstream>("circle 5\nrectangle 10 20\ntriangle 3 4 5");
     StreamFigureFactory factory(std::move(stream));
@@ -148,12 +148,12 @@ TEST_CASE("Factory handles multiple figures from same stream", "[streamfactory][
     REQUIRE(figure4 == nullptr);
 }
 
-TEST_CASE("Factory can be constructed with nullptr stream", "[streamfactory][nullptr]")
+TEST_CASE("Factory can be constructed with nullptr stream")
 {
     REQUIRE_NOTHROW(StreamFigureFactory(nullptr));
 }
 
-TEST_CASE("Factory handles extra whitespace in input", "[streamfactory][whitespace]")
+TEST_CASE("Factory handles extra whitespace in input")
 {
     SECTION("Extra spaces between parameters")
     {
@@ -186,7 +186,7 @@ TEST_CASE("Factory handles extra whitespace in input", "[streamfactory][whitespa
     }
 }
 
-TEST_CASE("Factory throws on invalid figure type", "[streamfactory][invalid]")
+TEST_CASE("Factory throws on invalid figure type")
 {
     auto stream = std::make_unique<std::istringstream>("pentagon 5");
     StreamFigureFactory factory(std::move(stream));
@@ -194,7 +194,7 @@ TEST_CASE("Factory throws on invalid figure type", "[streamfactory][invalid]")
     REQUIRE_THROWS(factory.create());
 }
 
-TEST_CASE("Factory throws on insufficient parameters", "[streamfactory][invalid]")
+TEST_CASE("Factory throws on insufficient parameters")
 {
     SECTION("Circle without radius")
     {
@@ -221,7 +221,7 @@ TEST_CASE("Factory throws on insufficient parameters", "[streamfactory][invalid]
     }
 }
 
-TEST_CASE("Factory throws on invalid parameter values", "[streamfactory][invalid]")
+TEST_CASE("Factory throws on invalid parameter values")
 {
     SECTION("Circle with negative radius")
     {
@@ -264,7 +264,7 @@ TEST_CASE("Factory throws on invalid parameter values", "[streamfactory][invalid
     }
 }
 
-TEST_CASE("Factory throws on non-numeric parameters", "[streamfactory][invalid]")
+TEST_CASE("Factory throws on non-numeric parameters")
 {
     SECTION("Circle with text radius")
     {
@@ -291,7 +291,7 @@ TEST_CASE("Factory throws on non-numeric parameters", "[streamfactory][invalid]"
     }
 }
 
-TEST_CASE("Factory handles scientific notation", "[streamfactory][scientific]")
+TEST_CASE("Factory handles scientific notation")
 {
     SECTION("Circle with scientific notation radius")
     {

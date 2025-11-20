@@ -10,15 +10,15 @@
 
 constexpr double TOLERANCE = 1e-10;
 
-struct CircleData
+struct CircleParams
 {
     double radius, expected;
 };
 
-TEST_CASE("Valid circles produce correct perimeter calculation", "[circle][perimeter]")
+TEST_CASE("Valid circles produce correct perimeter calculation")
 {
     auto [radius, expected] =
-        GENERATE(values<CircleData>({{5, 10.0 * M_PI}, {1e-5, 2e-5 * M_PI}, {10, 20.0 * M_PI}, {7.5, 15.0 * M_PI}}));
+        GENERATE(values<CircleParams>({{5, 10.0 * M_PI}, {1e-5, 2e-5 * M_PI}, {10, 20.0 * M_PI}, {7.5, 15.0 * M_PI}}));
 
     CAPTURE(radius, expected);
 
@@ -26,7 +26,7 @@ TEST_CASE("Valid circles produce correct perimeter calculation", "[circle][perim
     REQUIRE_THAT(circle.perimeter(), Catch::Matchers::WithinRel(expected, TOLERANCE));
 }
 
-TEST_CASE("Circles handle extreme valid parameters", "[circle][perimeter][edge]")
+TEST_CASE("Circles handle extreme valid parameters")
 {
     SECTION("Very large radius")
     {
@@ -43,7 +43,7 @@ TEST_CASE("Circles handle extreme valid parameters", "[circle][perimeter][edge]"
     }
 }
 
-TEST_CASE("clone creates independent copy", "[circle][clone]")
+TEST_CASE("clone creates independent copy")
 {
     const Circle original(10);
     Circle *cloned = original.clone();
@@ -55,22 +55,22 @@ TEST_CASE("clone creates independent copy", "[circle][clone]")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative radius", "[circle][validation][negative]")
+TEST_CASE("Constructor rejects negative radius")
 {
     REQUIRE_THROWS_AS(Circle(-1), std::invalid_argument);
 }
 
-TEST_CASE("Constructor rejects zero radius", "[circle][validation]")
+TEST_CASE("Constructor rejects zero radius")
 {
     REQUIRE_THROWS_AS(Circle(0), std::invalid_argument);
 }
 
-TEST_CASE("Constructor rejects NaN value", "[circle][validation][special]")
+TEST_CASE("Constructor rejects NaN value")
 {
     REQUIRE_THROWS_AS(Circle(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
 }
 
-TEST_CASE("Constructor rejects infinite values", "[circle][validation][special]")
+TEST_CASE("Constructor rejects infinite values")
 {
     SECTION("Positive infinity")
     {
@@ -83,7 +83,7 @@ TEST_CASE("Constructor rejects infinite values", "[circle][validation][special]"
     }
 }
 
-TEST_CASE("Constructor detects arithmetic overflow", "[circle][validation][overflow]")
+TEST_CASE("Constructor detects arithmetic overflow")
 {
     constexpr double large = std::numeric_limits<double>::max();
     REQUIRE_THROWS_AS(Circle(large), std::invalid_argument);

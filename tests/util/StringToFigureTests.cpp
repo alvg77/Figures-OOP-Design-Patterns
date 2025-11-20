@@ -10,7 +10,7 @@
 #include <iostream>
 #include <oneapi/tbb/info.h>
 
-TEST_CASE("StringToFigure::createFigure creates valid Triangle", "[StringToFigure]")
+TEST_CASE("StringToFigure::createFigure creates valid Triangle")
 {
     SECTION("Lowercase triangle")
     {
@@ -48,7 +48,7 @@ TEST_CASE("StringToFigure::createFigure creates valid Triangle", "[StringToFigur
     }
 }
 
-TEST_CASE("createFigure creates valid Circle", "[StringToFigure]")
+TEST_CASE("createFigure creates valid Circle")
 {
     SECTION("Lowercase circle")
     {
@@ -79,7 +79,7 @@ TEST_CASE("createFigure creates valid Circle", "[StringToFigure]")
     }
 }
 
-TEST_CASE("createFigure creates valid Rectangle", "[StringToFigure]")
+TEST_CASE("createFigure creates valid Rectangle")
 {
     SECTION("Lowercase rectangle")
     {
@@ -110,7 +110,7 @@ TEST_CASE("createFigure creates valid Rectangle", "[StringToFigure]")
     }
 }
 
-TEST_CASE("createFigure throws on invalid parameter count", "[StringToFigure]")
+TEST_CASE("createFigure throws on invalid parameter count")
 {
     SECTION("Triangle with too few parameters")
     {
@@ -151,7 +151,7 @@ TEST_CASE("createFigure throws on invalid parameter count", "[StringToFigure]")
     }
 }
 
-TEST_CASE("createFigure throws on invalid figure name", "[StringToFigure]")
+TEST_CASE("createFigure throws on invalid figure name")
 {
     SECTION("Unknown figure name")
     {
@@ -174,7 +174,7 @@ TEST_CASE("createFigure throws on invalid figure name", "[StringToFigure]")
     }
 }
 
-TEST_CASE("createFigure throws on invalid numeric parameters", "[StringToFigure]")
+TEST_CASE("createFigure throws on invalid numeric parameters")
 {
     SECTION("Non-numeric parameter for triangle")
     {
@@ -192,7 +192,7 @@ TEST_CASE("createFigure throws on invalid numeric parameters", "[StringToFigure]
     }
 }
 
-TEST_CASE("createFigure handles negative and zero values", "[StringToFigure]")
+TEST_CASE("createFigure handles negative and zero values")
 {
     SECTION("Negative parameter for circle")
     {
@@ -205,7 +205,7 @@ TEST_CASE("createFigure handles negative and zero values", "[StringToFigure]")
     }
 }
 
-TEST_CASE("createFigure handles scientific notation", "[StringToFigure]")
+TEST_CASE("createFigure handles scientific notation")
 {
     SECTION("Circle with scientific notation")
     {
@@ -220,41 +220,48 @@ TEST_CASE("createFigure handles scientific notation", "[StringToFigure]")
         REQUIRE(figure != nullptr);
         REQUIRE(dynamic_cast<Triangle *>(figure.get()) != nullptr);
     }
+
+    SECTION("Rectangle with scientific notation")
+    {
+        std::unique_ptr<Figure> figure = StringToFigure::createFigure("rectangle 1e+130 2e-131");
+        REQUIRE(figure != nullptr);
+        REQUIRE(dynamic_cast<Rectangle *>(figure.get()) != nullptr);
+    }
 }
 
-TEST_CASE("is_double validates numeric strings", "[StringToFigure]")
+TEST_CASE("isDouble validates numeric strings")
 {
     SECTION("Valid doubles")
     {
-        REQUIRE(StringToFigure::is_double("3.14"));
-        REQUIRE(StringToFigure::is_double("42"));
-        REQUIRE(StringToFigure::is_double("-5.5"));
-        REQUIRE(StringToFigure::is_double("0.0"));
-        REQUIRE(StringToFigure::is_double("1e10"));
-        REQUIRE(StringToFigure::is_double("1.5e-3"));
-        REQUIRE(StringToFigure::is_double(".5"));
-        REQUIRE(StringToFigure::is_double("5."));
+        REQUIRE(StringToFigure::isDouble("3.14"));
+        REQUIRE(StringToFigure::isDouble("42"));
+        REQUIRE(StringToFigure::isDouble("-5.5"));
+        REQUIRE(StringToFigure::isDouble("0.0"));
+        REQUIRE(StringToFigure::isDouble("1e10"));
+        REQUIRE(StringToFigure::isDouble("1.5e-131"));
+        REQUIRE(StringToFigure::isDouble(".5"));
+        REQUIRE(StringToFigure::isDouble("5."));
     }
 
     SECTION("Invalid doubles")
     {
-        REQUIRE_FALSE(StringToFigure::is_double("abc"));
-        REQUIRE_FALSE(StringToFigure::is_double("3.14.15"));
-        REQUIRE_FALSE(StringToFigure::is_double(""));
-        REQUIRE_FALSE(StringToFigure::is_double("   "));
-        REQUIRE_FALSE(StringToFigure::is_double("12abc"));
-        REQUIRE_FALSE(StringToFigure::is_double("abc12"));
+        REQUIRE_FALSE(StringToFigure::isDouble("abc"));
+        REQUIRE_FALSE(StringToFigure::isDouble("3.14.15"));
+        REQUIRE_FALSE(StringToFigure::isDouble(""));
+        REQUIRE_FALSE(StringToFigure::isDouble("   "));
+        REQUIRE_FALSE(StringToFigure::isDouble("12abc"));
+        REQUIRE_FALSE(StringToFigure::isDouble("abc12"));
     }
 
     SECTION("Edge cases")
     {
-        REQUIRE(StringToFigure::is_double("inf"));
-        REQUIRE(StringToFigure::is_double("-inf"));
-        REQUIRE(StringToFigure::is_double("nan"));
+        REQUIRE(StringToFigure::isDouble("inf"));
+        REQUIRE(StringToFigure::isDouble("-inf"));
+        REQUIRE(StringToFigure::isDouble("nan"));
     }
 }
 
-TEST_CASE("createFigure handles decimal values", "[StringToFigure]")
+TEST_CASE("createFigure handles decimal values")
 {
     SECTION("Triangle with decimal values")
     {

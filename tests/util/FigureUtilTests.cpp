@@ -6,7 +6,9 @@
 
 #include "../../src/util/figure_util/FigureUtil.hpp"
 
-TEST_CASE("Valid strings convert to correct figure types", "[figureutil][strToFigure]")
+constexpr int SAMPLE_SIZE = 100;
+
+TEST_CASE("Valid strings convert to correct figure types")
 {
     SECTION("triangle")
     {
@@ -24,24 +26,25 @@ TEST_CASE("Valid strings convert to correct figure types", "[figureutil][strToFi
     }
 }
 
-TEST_CASE("strToFigure rejects invalid strings", "[figureutil][strToFigure][validation]")
+TEST_CASE("strToFigure rejects invalid strings")
 {
     REQUIRE_THROWS_AS(FigureUtil::strToFigure("invalid"), std::invalid_argument);
     REQUIRE_THROWS_AS(FigureUtil::strToFigure(""), std::invalid_argument);
     REQUIRE_THROWS_AS(FigureUtil::strToFigure("Triangle"), std::invalid_argument);
     REQUIRE_THROWS_AS(FigureUtil::strToFigure("CIRCLE"), std::invalid_argument);
-    REQUIRE_THROWS_AS(FigureUtil::strToFigure(" circle"), std::invalid_argument);
+    REQUIRE_THROWS_AS(FigureUtil::strToFigure(" rectangle"), std::invalid_argument);
     REQUIRE_THROWS_AS(FigureUtil::strToFigure("circle "), std::invalid_argument);
+    REQUIRE_THROWS_AS(FigureUtil::strToFigure("asfd1@#%12asdfa1ef42314f"), std::invalid_argument);
 }
 
-TEST_CASE("Figure types return correct parameter counts", "[figureutil][getFigureParams]")
+TEST_CASE("Figure types return correct parameter counts")
 {
     REQUIRE(FigureUtil::getFigureParams(FigureUtil::TRIANGLE) == 3);
     REQUIRE(FigureUtil::getFigureParams(FigureUtil::CIRCLE) == 1);
     REQUIRE(FigureUtil::getFigureParams(FigureUtil::RECTANGLE) == 2);
 }
 
-TEST_CASE("Generates valid figure types", "[figureutil][getRandomFigureType]")
+TEST_CASE("Generates valid figure types")
 {
     std::mt19937_64 rng(12345);
 
@@ -55,29 +58,43 @@ TEST_CASE("Generates valid figure types", "[figureutil][getRandomFigureType]")
     }
 }
 
-TEST_CASE("Generates all three figure types over multiple calls", "[figureutil][getRandomFigureType][distribution]")
+TEST_CASE("Generates all three figure types over multiple calls")
 {
-    std::mt19937_64 rng(98765);
+    std::mt19937_64 rng(12345);
 
-    bool hasTriangle = false;
-    bool hasCircle = false;
-    bool hasRectangle = false;
-
-    for (int i = 0; i < 100 && !(hasTriangle && hasCircle && hasRectangle); ++i)
+    for (int i = 0; i < SAMPLE_SIZE; ++i)
     {
-        const FigureUtil::FigureType type = FigureUtil::getRandomFigureType(rng);
+        bool hasTriangle = false;
+        bool hasCircle = false;
+        bool hasRectangle = false;
 
-        if (type == FigureUtil::TRIANGLE) hasTriangle = true;
-        if (type == FigureUtil::CIRCLE) hasCircle = true;
-        if (type == FigureUtil::RECTANGLE) hasRectangle = true;
+        for (int i = 0; i < SAMPLE_SIZE; ++i)
+        {
+            const FigureUtil::FigureType type = FigureUtil::getRandomFigureType(rng);
+
+            if (type == FigureUtil::TRIANGLE) hasTriangle = true;
+            if (type == FigureUtil::CIRCLE) hasCircle = true;
+            if (type == FigureUtil::RECTANGLE) hasRectangle = true;
+        }
+
+        REQUIRE(hasTriangle);
+        REQUIRE(hasCircle);
+        REQUIRE(hasRectangle);
     }
-
-    REQUIRE(hasTriangle);
-    REQUIRE(hasCircle);
-    REQUIRE(hasRectangle);
 }
 
-TEST_CASE("Random generation is deterministic with same seed", "[figureutil][getRandomFigureType][deterministic]")
+TEST_CASE("strToFigure and getFigureParams work together correctly")
+{
+    const FigureUtil::FigureType triangleType = FigureUtil::strToFigure("triangle");
+    const FigureUtil::FigureType circleType = FigureUtil::strToFigure("circle");
+    const FigureUtil::FigureType rectangleType = FigureUtil::strToFigure("rectangle");
+
+    REQUIRE(FigureUtil::getFigureParams(triangleType) == 3);
+    REQUIRE(FigureUtil::getFigureParams(circleType) == 1);
+    REQUIRE(FigureUtil::getFigureParams(rectangleType) == 2);
+}
+
+TEST_CASE("Random generation produces the same results with the same seeds")
 {
     std::mt19937_64 rng1(42);
     std::mt19937_64 rng2(42);
@@ -94,7 +111,7 @@ TEST_CASE("Random generation is deterministic with same seed", "[figureutil][get
     REQUIRE(sequence1 == sequence2);
 }
 
-TEST_CASE("Random generation produces different sequences with different seeds", "[figureutil][getRandomFigureType][randomness]")
+TEST_CASE("Random generation produces different sequences with different seeds")
 {
     std::mt19937_64 rng1(111);
     std::mt19937_64 rng2(222);
@@ -109,45 +126,4 @@ TEST_CASE("Random generation produces different sequences with different seeds",
     }
 
     REQUIRE(sequence1 != sequence2);
-}
-
-TEST_CASE("strToFigure and getFigureParams work together correctly", "[figureutil][integration]")
-{
-    const FigureUtil::FigureType triangleType = FigureUtil::strToFigure("triangle");
-    const FigureUtil::FigureType circleType = FigureUtil::strToFigure("circle");
-    const FigureUtil::FigureType rectangleType = FigureUtil::strToFigure("rectangle");
-
-    REQUIRE(FigureUtil::getFigureParams(triangleType) == 3);
-    REQUIRE(FigureUtil::getFigureParams(circleType) == 1);
-    REQUIRE(FigureUtil::getFigureParams(rectangleType) == 2);
-}
-
-TEST_CASE("Random figure types have valid parameter counts", "[figureutil][integration]")
-{
-    std::mt19937_64 rng(2468);
-
-    for (int i = 0; i < 50; ++i)
-    {
-        const FigureUtil::FigureType type = FigureUtil::getRandomFigureType(rng);
-        const unsigned params = FigureUtil::getFigureParams(type);
-
-        REQUIRE(params > 0);
-        REQUIRE(params <= 3);
-    }
-}
-
-TEST_CASE("All valid string conversions produce types with valid parameter counts", "[figureutil][integration]")
-{
-    const std::vector<std::string> validStrings = {"triangle", "circle", "rectangle"};
-
-    for (const auto& str : validStrings)
-    {
-        const FigureUtil::FigureType type = FigureUtil::strToFigure(str);
-        const unsigned params = FigureUtil::getFigureParams(type);
-
-        CAPTURE(str, type, params);
-
-        REQUIRE(params > 0);
-        REQUIRE(params <= 3);
-    }
 }

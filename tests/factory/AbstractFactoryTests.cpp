@@ -19,28 +19,28 @@ bool isStreamFigureFactory(const FigureFactory *figfactory)
     return dynamic_cast<const StreamFigureFactory *>(figfactory);
 }
 
-TEST_CASE("Returns nullptr for empty input", "[abstractfactory][create]")
+TEST_CASE("Returns nullptr for empty input")
 {
     std::vector<std::string> input;
 
     REQUIRE(AbstractFactory::getFactory(input) == nullptr);
 }
 
-TEST_CASE("Creates RandomFigureFactory for 'random' input", "[abstractfactory][create]")
+TEST_CASE("Creates RandomFigureFactory for 'random' input")
 {
     std::vector<std::string> input = {"random"};
 
     REQUIRE(isRandomFigureFactory(AbstractFactory::getFactory(input).get()));
 }
 
-TEST_CASE("Creates StreamFigureFactory for 'stdin' input", "[abstractfactory][create]")
+TEST_CASE("Creates StreamFigureFactory for 'stdin' input")
 {
     std::vector<std::string> input = {"stdin"};
 
     REQUIRE(isStreamFigureFactory(AbstractFactory::getFactory(input).get()));
 }
 
-TEST_CASE("Creates StreamFigureFactory with file stream for 'file <filename>' input", "[abstractfactory][create]")
+TEST_CASE("Creates StreamFigureFactory with file stream for 'file <filename>' input")
 {
     std::string filename = "test_input.txt";
 
@@ -55,7 +55,7 @@ TEST_CASE("Creates StreamFigureFactory with file stream for 'file <filename>' in
     std::filesystem::remove(filename);
 }
 
-TEST_CASE("Throws exception for 'file' without filename or with many filenames", "[abstractfactory][validation]")
+TEST_CASE("Throws exception for 'file' without filename or with many filenames")
 {
     std::vector<std::string> input =
         GENERATE(values<std::vector<std::string>>({{"file"}, {"file", "a", "b", "c"}, {"file", "a", "b"}}));
@@ -65,7 +65,7 @@ TEST_CASE("Throws exception for 'file' without filename or with many filenames",
     REQUIRE_THROWS_AS(AbstractFactory::getFactory(input), std::invalid_argument);
 }
 
-TEST_CASE("Throws exception for unrecognized input type", "[abstractfactory][validation]")
+TEST_CASE("Throws exception for unrecognized input type")
 {
     std::vector<std::string> input =
         GENERATE(values<std::vector<std::string>>({{"asfaslhj"}, {"asdf", "asdf", "asdf"}}));

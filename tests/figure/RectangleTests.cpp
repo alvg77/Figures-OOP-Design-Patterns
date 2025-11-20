@@ -7,29 +7,23 @@
 
 constexpr double TOLERANCE = 1e-10;
 
-struct RectangleData
-{
-    double width, height, expected;
-};
-
-struct InvalidData
+struct RectangleParams
 {
     double width, height;
-    std::string problem;
 };
 
-TEST_CASE("Valid rectangles produce correct perimeter calculation", "[rectangle][perimeter]")
+TEST_CASE("Valid rectangles produce correct perimeter calculation")
 {
-    auto [width, height, expected] =
-        GENERATE(values<RectangleData>({{10, 20, 60}, {10, 5, 30.0}, {12, 12, 48.0}, {0.1, 0.2, 0.6}}));
+    auto [params, expected] = GENERATE(
+        table<RectangleParams, double>({{{10, 20}, 60}, {{10, 5}, 30.0}, {{12, 12}, 48.0}, {{0.1, 0.2}, 0.6}}));
 
-    CAPTURE(width, height, expected);
+    CAPTURE(params, expected);
 
-    const Rectangle rectangle(width, height);
+    const Rectangle rectangle(params.width, params.height);
     REQUIRE_THAT(rectangle.perimeter(), Catch::Matchers::WithinRel(expected, TOLERANCE));
 }
 
-TEST_CASE("Rectangles handle extreme valid parameters", "[rectangle][perimeter][edge]")
+TEST_CASE("Rectangles handle extreme valid parameters")
 {
     SECTION("Very large sides")
     {
@@ -51,7 +45,7 @@ TEST_CASE("Rectangles handle extreme valid parameters", "[rectangle][perimeter][
     }
 }
 
-TEST_CASE("clone creates independent copy", "[rectangle][clone]")
+TEST_CASE("clone creates independent copy")
 {
     const Rectangle original(5, 10);
     Rectangle *cloned = original.clone();
@@ -63,21 +57,21 @@ TEST_CASE("clone creates independent copy", "[rectangle][clone]")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative dimensions", "[rectangle][validation][negative]")
+TEST_CASE("Constructor rejects negative dimensions")
 {
-    auto [width, height, desc] = GENERATE(
-        values<InvalidData>({{-1, 1, "negative width"}, {1, -1, "negative height"}, {-1, -1, "both negative"}}));
+    auto [width, height] = GENERATE(values<RectangleParams>({{-1, 1}, {1, -1}, {-1, -1}}));
 
-    INFO("Testing with " << desc << ": (" << width << ", " << height << ")");
+    CAPTURE(width, height);
 
     REQUIRE_THROWS_AS(Rectangle(width, height), std::invalid_argument);
 }
 
 TEST_CASE("Constructor rejects zero dimensions", "[rectangle][validation][zero]")
 {
-    auto [width, height, desc] = GENERATE(values<InvalidData>({{0, 1, "zero width"}, {1, 0, "zero height"}}));
+    auto [width, height] = GENERATE(values<RectangleParams>({{0, 1}, {1, 0}}));
 
-    INFO("Testing with " << desc << ": (" << width << ", " << height << ")");
+    CAPTURE(width, height);
+
     REQUIRE_THROWS_AS(Rectangle(width, height), std::invalid_argument);
 }
 
@@ -87,26 +81,27 @@ TEST_CASE("Constructor rejects NaN values", "[rectangle][validation][nan]")
     std::array<double, 2> dimensions = {1, 1};
     dimensions[side] = std::numeric_limits<double>::quiet_NaN();
 
-    INFO("NaN in dimension " << side);
+    CAPTURE(side, dimensions);
+
     REQUIRE_THROWS_AS(Rectangle(dimensions[0], dimensions[1]), std::invalid_argument);
 }
 
 TEST_CASE("Constructor rejects infinite values", "[rectangle][validation][infinity]")
 {
-    auto [value, side, desc] = GENERATE(table<double, int, const char *>(
-        {{std::numeric_limits<double>::infinity(), 0, "positive infinity in width"},
-         {std::numeric_limits<double>::infinity(), 1, "positive infinity in height"},
-         {-std::numeric_limits<double>::infinity(), 0, "negative infinity in width"},
-         {-std::numeric_limits<double>::infinity(), 1, "negative infinity in height"}}));
+    auto [value, side] = GENERATE(table<double, unsigned>({{std::numeric_limits<double>::infinity(), 0},
+                                                           {std::numeric_limits<double>::infinity(), 1},
+                                                           {-std::numeric_limits<double>::infinity(), 0},
+                                                           {-std::numeric_limits<double>::infinity(), 1}}));
 
     std::array<double, 2> dimensions = {1, 1};
     dimensions[side] = value;
 
-    INFO("Testing " << desc);
+    CAPTURE(side, dimensions);
+
     REQUIRE_THROWS_AS(Rectangle(dimensions[0], dimensions[1]), std::invalid_argument);
 }
 
-TEST_CASE("Constructor detects arithmetic overflow", "[rectangle][validation][overflow]")
+TEST_CASE("Constructor detects arithmetic overflow")
 {
     constexpr double large = std::numeric_limits<double>::max() / 2;
     REQUIRE_THROWS_AS(Rectangle(large, large), std::invalid_argument);

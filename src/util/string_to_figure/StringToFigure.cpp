@@ -57,7 +57,7 @@ std::unique_ptr<Figure> StringToFigure::createFigure(const std::string &represen
     return nullptr;
 }
 
-bool StringToFigure::is_double(const std::string &str)
+bool StringToFigure::isDouble(const std::string &str)
 {
     try
     {

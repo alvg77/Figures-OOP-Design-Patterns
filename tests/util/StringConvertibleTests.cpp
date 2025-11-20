@@ -25,7 +25,7 @@ struct CircleToString
     std::string expected;
 };
 
-TEST_CASE("Triangle to_string returns correct format", "[triangle][string]")
+TEST_CASE("Triangle to_string returns correct format")
 {
     auto [a, b, c, expected] =
         GENERATE(values<TriangleToString>({{3, 4, 5, "Triangle 3 4 5"},
@@ -44,14 +44,14 @@ TEST_CASE("Triangle to_string returns correct format", "[triangle][string]")
     REQUIRE(result == expected);
 }
 
-TEST_CASE("to_string produces correct format for various dimensions", "[rectangle][string]")
+TEST_CASE("to_string produces correct format for various dimensions")
 {
     auto [width, height, expected] = GENERATE(values<RectangleToString>({{1, 2, "Rectangle 1 2"},
                                                                          {10, 20, "Rectangle 10 20"},
                                                                          {5.5, 7.3, "Rectangle 5.5 7.3"},
                                                                          {1.414, 2.718, "Rectangle 1.414 2.718"},
                                                                          {100, 100, "Rectangle 100 100"},
-                                                                         {1e10, 2e10, "Rectangle 1e+10 2e+10"},
+                                                                         {1e130, 2e-131, "Rectangle 1e+130 2e-131"},
                                                                          {0.001, 0.002, "Rectangle 0.001 0.002"}}));
 
     CAPTURE(width, height, expected);
@@ -62,7 +62,7 @@ TEST_CASE("to_string produces correct format for various dimensions", "[rectangl
     REQUIRE(result == expected);
 }
 
-TEST_CASE("to_string produces correct format for various radii", "[circle][string]")
+TEST_CASE("to_string produces correct format for various radii")
 {
     auto [radius, expected] = GENERATE(values<CircleToString>({{10, "Circle 10"},
                                                                {5, "Circle 5"},

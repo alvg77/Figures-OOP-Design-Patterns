@@ -1,35 +1,34 @@
-#include <catch2/matchers/catch_matchers.hpp>
-#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include "../../src/figure/triangle/Triangle.hpp"
 
 constexpr double TOLERANCE = 1e-10;
 
-struct TriangleData
-{
-    double a, b, c, expected;
-};
-
-struct InvalidData
+struct TriangleParams
 {
     double a, b, c;
-    const char *problem;
 };
 
-TEST_CASE("Valid triangles produce correct perimeter calculation", "[triangle][perimeter]")
+TEST_CASE("Valid triangles produce correct perimeter calculation")
 {
-    auto [a, b, c, expected] = GENERATE(values<TriangleData>(
-        {{3, 4, 5, 12.0}, {15, 25, 35, 75.0}, {7, 7, 7, 21.0}, {5, 5, 8, 18.0}, {0.1, 0.2, 0.25, 0.55}}));
+    auto [params, expected] = GENERATE(table<TriangleParams, double>(
+        {{{3, 4, 5}, 12.0},
+            {{15, 25, 35}, 75.0},
+            {{7, 7, 7}, 21.0},
+            {{5, 5, 8}, 18.0},
+            {{0.1, 0.2, 0.25}, 0.55}}));
 
-    CAPTURE(a, b, c, expected);
+    CAPTURE(params.a, params.b, params.c, expected);
+    CAPTURE(params.a, params.b, params.c, expected);
 
-    const Triangle triangle(a, b, c);
+    const Triangle triangle(params.a, params.b, params.c);
     REQUIRE_THAT(triangle.perimeter(), Catch::Matchers::WithinRel(expected, TOLERANCE));
 }
 
-TEST_CASE("Triangles handle extreme valid parameters", "[triangle][perimeter][edge]")
+TEST_CASE("Triangles handle extreme valid parameters")
 {
     SECTION("Very large sides")
     {
@@ -57,7 +56,7 @@ TEST_CASE("Triangles handle extreme valid parameters", "[triangle][perimeter][ed
     }
 }
 
-TEST_CASE("clone creates independent copy", "[triangle][clone]")
+TEST_CASE("clone creates independent copy")
 {
     const Triangle original(5, 6, 7);
     Triangle *cloned = original.clone();
@@ -69,38 +68,34 @@ TEST_CASE("clone creates independent copy", "[triangle][clone]")
     delete cloned;
 }
 
-TEST_CASE("Constructor rejects negative side lengths", "[triangle][validation][negative]")
+TEST_CASE("Constructor rejects negative side lengths")
 {
-    auto [a, b, c, problem] = GENERATE(
-        values<InvalidData>({{-1, 2, 3, "a is negative"}, {1, -2, 3, "b is negative"}, {1, 2, -3, "c is negative"}}));
+    auto [a, b, c] = GENERATE(values<TriangleParams>({{-1, 2, 3}, {1, -2, 3}, {1, 2, -3}}));
 
-    INFO("Test fails at " << problem << ": (" << a << ", " << b << ", " << c << ")");
+    CAPTURE(a, b, c);
 
     REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
 }
 
-TEST_CASE("Constructor rejects zero side lengths", "[triangle][validation][zero]")
+TEST_CASE("Constructor rejects zero side lengths")
 {
-    auto [a, b, c, problem] =
-        GENERATE(values<InvalidData>({{0, 2, 3, "a is zero"}, {1, 0, 3, "b is zero"}, {1, 2, 0, "c is zero"}}));
+    auto [a, b, c] = GENERATE(values<TriangleParams>({{0, 2, 3}, {1, 0, 3}, {1, 2, 0}}));
 
-    INFO("Test fails at" << problem << ": (" << a << ", " << b << ", " << c << ")");
-    REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
-}
-
-TEST_CASE("Constructor enforces triangle inequality", "[triangle][validation][invalid side constraints]")
-{
-    auto [a, b, c, problem] = GENERATE(values<InvalidData>({{1, 2, 10, "a + b < c"},
-                                                            {1, 10, 2, "a + c < b"},
-                                                            {10, 1, 2, "b + c < a"},
-                                                            {1, 2, 3, "degenerate: a + b = c"}}));
-
-    INFO("Triangle inequality violation: " << problem);
+    CAPTURE(a, b, c);
 
     REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
 }
 
-TEST_CASE("Constructor rejects NaN values", "[triangle][validation][nan]")
+TEST_CASE("Constructor enforces triangle inequality")
+{
+    auto [a, b, c] = GENERATE(values<TriangleParams>({{1, 2, 10}, {1, 10, 2}, {10, 1, 2}, {1, 2, 3}}));
+
+    CAPTURE(a, b, c);
+
+    REQUIRE_THROWS_AS(Triangle(a, b, c), std::invalid_argument);
+}
+
+TEST_CASE("Constructor rejects NaN values")
 {
     constexpr double nan = std::numeric_limits<double>::quiet_NaN();
 
@@ -108,30 +103,29 @@ TEST_CASE("Constructor rejects NaN values", "[triangle][validation][nan]")
     std::array<double, 3> sides = {1, 1, 1};
     sides[side] = nan;
 
-    INFO("NaN in position " << side);
+    CAPTURE(side, sides);
 
     REQUIRE_THROWS_AS(Triangle(sides[0], sides[1], sides[2]), std::invalid_argument);
 }
 
-TEST_CASE("Constructor rejects infinite values", "[triangle][validation][infinity]")
+TEST_CASE("Constructor rejects infinite values")
 {
-    auto [value, side, problem] = GENERATE(
-        table<double, int, const char *>({{std::numeric_limits<double>::infinity(), 0, "positive infinity in a"},
-                                          {std::numeric_limits<double>::infinity(), 1, "positive infinity in b"},
-                                          {std::numeric_limits<double>::infinity(), 2, "positive infinity in c"},
-                                          {-std::numeric_limits<double>::infinity(), 0, "negative infinity in a"},
-                                          {-std::numeric_limits<double>::infinity(), 1, "negative infinity in b"},
-                                          {-std::numeric_limits<double>::infinity(), 2, "negative infinity in c"}}));
+    auto [value, side] = GENERATE(table<double, unsigned>({{std::numeric_limits<double>::infinity(), 0},
+                                                          {std::numeric_limits<double>::infinity(), 1},
+                                                          {std::numeric_limits<double>::infinity(), 2},
+                                                          {-std::numeric_limits<double>::infinity(), 0},
+                                                          {-std::numeric_limits<double>::infinity(), 1},
+                                                          {-std::numeric_limits<double>::infinity(), 2}}));
 
     std::array<double, 3> sides = {1, 1, 1};
     sides[side] = value;
 
-    INFO("Testing " << problem);
+    CAPTURE(side, sides);
 
     REQUIRE_THROWS_AS(Triangle(sides[0], sides[1], sides[2]), std::invalid_argument);
 }
 
-TEST_CASE("Constructor detects arithmetic overflow", "[triangle][validation][overflow]")
+TEST_CASE("Constructor detects arithmetic overflow")
 {
     SECTION("Three sides causing overflow")
     {
