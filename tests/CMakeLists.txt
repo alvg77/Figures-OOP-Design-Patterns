@@ -1,12 +1,12 @@
-Include(FetchContent)
+include(FetchContent)
 
-FetchContent_Declare(
+fetchContent_declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
         GIT_TAG v3.11.0
 )
 
-FetchContent_MakeAvailable(Catch2)
+fetchContent_makeAvailable(Catch2)
 
 set(FIGURES_TEST_SOURCES
         figure/TriangleTests.cpp
@@ -23,7 +23,9 @@ set(FIGURES_TEST_SOURCES
 add_executable(figures-tests ${FIGURES_TEST_SOURCES})
 
 target_link_libraries(figures-tests PRIVATE
-        figures_lib
+        figures_figure
+        figures_util
+        figures_factory
         Catch2::Catch2WithMain
 )
 

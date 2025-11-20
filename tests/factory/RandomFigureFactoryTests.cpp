@@ -176,7 +176,6 @@ TEST_CASE("Rectangles are successfully generated with valid values", "[RandomFig
 TEST_CASE("Triangles are successfully generated with valid values", "[RandomFigureFactory]")
 {
     RandomFigureFactory factory;
-
     int trianglesFound = 0;
 
     for (int i = 0; i < SAMPLE_SIZE; ++i)
