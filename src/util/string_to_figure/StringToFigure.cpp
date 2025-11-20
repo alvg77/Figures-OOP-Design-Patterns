@@ -33,7 +33,7 @@ std::unique_ptr<Figure> StringToFigure::createFigure(const std::string &represen
             throw std::invalid_argument("'" + temp + "' is not a valid number");
         } catch (const std::out_of_range &e)
         {
-            throw std::invalid_argument("'" + temp + "' is too large");
+            throw std::invalid_argument("'" + temp + "' can't be stored in a double");
         }
     }
 

@@ -180,10 +180,18 @@ TEST_CASE("createFigure throws on non-numeric parameters", "[StringToFigure]")
     {
         REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 notanumber"), "'notanumber' is not a valid number");
     }
+}
 
+TEST_CASE("createFigure throws on numeric parameters that can't be stored in a double", "[StringToFigure]")
+{
     SECTION("Number too large to be stored in double")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle 4e+309"), "'4e+309' is too large");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("circle 4e+309"), "'4e+309' can't be stored in a double");
+    }
+
+    SECTION("Number too little to be stored in a double")
+    {
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 1e-400 2"), "'1e-400' can't be stored in a double");
     }
 }
 
