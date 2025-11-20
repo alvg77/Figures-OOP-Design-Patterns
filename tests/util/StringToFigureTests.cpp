@@ -140,8 +140,7 @@ TEST_CASE("createFigure throws on invalid parameter count")
 
     SECTION("Rectangle with too many parameters")
     {
-        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 6.0 8.0"),
-                            "Rectangle requires two parameters");
+        REQUIRE_THROWS_WITH(StringToFigure::createFigure("rectangle 4.0 6.0 8.0"), "Rectangle requires two parameters");
     }
 }
 

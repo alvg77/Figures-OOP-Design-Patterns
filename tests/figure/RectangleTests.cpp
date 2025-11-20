@@ -76,7 +76,8 @@ TEST_CASE("Constructor rejects NaN values")
 {
     const auto side = GENERATE(0, 1);
     double dimensions[] = {1, 1};
-    const std::string errMessages[] = {"'width' must be a finite positive value", "'height' must be a finite positive value"};
+    const std::string errMessages[] = {"'width' must be a finite positive value",
+                                       "'height' must be a finite positive value"};
     dimensions[side] = std::numeric_limits<double>::quiet_NaN();
 
     CAPTURE(side, dimensions);
@@ -92,7 +93,8 @@ TEST_CASE("Constructor rejects infinite values")
                                                            {-std::numeric_limits<double>::infinity(), 1}}));
 
     std::array<double, 2> dimensions = {1, 1};
-    const std::string errMessages[] = {"'width' must be a finite positive value", "'height' must be a finite positive value"};
+    const std::string errMessages[] = {"'width' must be a finite positive value",
+                                       "'height' must be a finite positive value"};
     dimensions[side] = value;
 
     CAPTURE(side, dimensions);

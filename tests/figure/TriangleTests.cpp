@@ -114,7 +114,7 @@ TEST_CASE("Constructor rejects infinite values")
     std::array<double, 3> sides = {1, 1, 1};
     sides[side] = value;
     const std::string errMessages[] = {"'a' must be a finite positive value", "'b' must be a finite positive value",
-                                           "'c' must be a finite positive value"};
+                                       "'c' must be a finite positive value"};
     CAPTURE(side, sides);
 
     REQUIRE_THROWS_WITH(Triangle(sides[0], sides[1], sides[2]), errMessages[side]);

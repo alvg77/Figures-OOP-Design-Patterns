@@ -30,18 +30,9 @@ TEST_CASE("Valid strings convert to correct figure types")
 
 TEST_CASE("strToFigure rejects invalid strings")
 {
-    const std::string str = GENERATE(
-        "invalid",
-        "",
-        "Triangle",
-        "CIRCLE",
-        "   rectangle",
-        "circle   ",
-        "asy9h237@@f23"
-    );
+    const std::string str = GENERATE("invalid", "", "Triangle", "CIRCLE", "   rectangle", "circle   ", "asy9h237@@f23");
 
-    REQUIRE_THROWS_WITH(FigureUtil::strToFigure(str),
-                        "Invalid figure type: '" + str + "'");
+    REQUIRE_THROWS_WITH(FigureUtil::strToFigure(str), "Invalid figure type: '" + str + "'");
 }
 
 TEST_CASE("Figure types return correct parameter counts")
@@ -59,9 +50,7 @@ TEST_CASE("Generates valid figure types")
     {
         const FigureUtil::FigureType type = FigureUtil::getRandomFigureType(rng);
 
-        REQUIRE((type == FigureUtil::TRIANGLE ||
-                 type == FigureUtil::CIRCLE ||
-                 type == FigureUtil::RECTANGLE));
+        REQUIRE((type == FigureUtil::TRIANGLE || type == FigureUtil::CIRCLE || type == FigureUtil::RECTANGLE));
     }
 }
 
@@ -79,9 +68,12 @@ TEST_CASE("Generates all three figure types over multiple calls")
         {
             const FigureUtil::FigureType type = FigureUtil::getRandomFigureType(rng);
 
-            if (type == FigureUtil::TRIANGLE) hasTriangle = true;
-            if (type == FigureUtil::CIRCLE) hasCircle = true;
-            if (type == FigureUtil::RECTANGLE) hasRectangle = true;
+            if (type == FigureUtil::TRIANGLE)
+                hasTriangle = true;
+            if (type == FigureUtil::CIRCLE)
+                hasCircle = true;
+            if (type == FigureUtil::RECTANGLE)
+                hasRectangle = true;
         }
 
         REQUIRE(hasTriangle);

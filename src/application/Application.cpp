@@ -156,7 +156,6 @@ void Application::deleteFigure()
     std::cout << "Figure successfully deleted!\n";
 }
 
-
 void Application::saveToFile() const
 {
     std::string input;
