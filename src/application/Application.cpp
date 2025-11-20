@@ -58,10 +58,10 @@ void Application::loadFigures()
     int n;
     do
     {
-        std::cout << "\nSelect number of figures - n (if you enter more figures than n, only the first n of them will be processed): ";
+        std::cout << "Select number of figures - n (if you enter more figures than n, only the first n of them will be processed): ";
         if (!(std::cin >> n))
         {
-            std::cout << "\nInvalid input. Please try again.\n";
+            std::cout << "Invalid input. Please try again.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             n = 0;
@@ -71,7 +71,7 @@ void Application::loadFigures()
 
         if (n <= 0)
         {
-            std::cout << "\nNumber of figures should be greater than 0\n";
+            std::cout << "Number of figures should be greater than 0\n";
         }
     } while (n <= 0);
 
@@ -100,7 +100,7 @@ void Application::menu()
     bool quit = false;
     while (!quit)
     {
-        std::cout << "1. Display all figures\n";
+        std::cout << "\n1. Display all figures\n";
         std::cout << "2. Clone a figure\n";
         std::cout << "3. Save figures to file\n";
         std::cout << "4. Delete figure\n";
@@ -156,7 +156,7 @@ void Application::cloneFigure()
     int input;
     if (!(std::cin >> input))
     {
-        std::cout << "\nInvalid input. Please try again.\n";
+        std::cout << "Invalid input. Please try again.\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         return;
@@ -164,12 +164,12 @@ void Application::cloneFigure()
 
     if (input >= figures.size() || input < 0)
     {
-        std::cout << "\nInvalid input. No figure corresponds to that number.\n";
+        std::cout << "Invalid input. No figure corresponds to that number.\n";
         return;
     }
 
     figures.push_back(std::unique_ptr<Figure>(figures.at(input)->clone()));
-    std::cout << "Figure successfully cloned and added to the end of the list!\n";
+    std::cout << "---Figure successfully cloned and added to the end of the list!---\n";
 }
 
 void Application::deleteFigure()
@@ -179,7 +179,7 @@ void Application::deleteFigure()
     int input;
     if (!(std::cin >> input))
     {
-        std::cout << "\nInvalid input. Please try again.\n";
+        std::cout << "Invalid input. Please try again.\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         return;
@@ -187,19 +187,19 @@ void Application::deleteFigure()
 
     if (input >= figures.size() || input < 0)
     {
-        std::cout << "\nInvalid input. No figure corresponds to that number.\n";
+        std::cout << "Invalid input. No figure corresponds to that number.\n";
         return;
     }
 
     figures.erase(figures.begin() + input);
-    std::cout << "Figure successfully deleted!\n";
+    std::cout << "---Figure successfully deleted!---\n";
 }
 
 void Application::saveToFile() const
 {
     std::string input;
 
-    std::cout << "\nEnter output filename (leave blank to cancel): ";
+    std::cout << "Enter output filename (leave blank to cancel): ";
     std::getline(std::cin, input);
 
     if (!input.empty())
@@ -208,7 +208,7 @@ void Application::saveToFile() const
 
         if (!outputFile.is_open())
         {
-            std::cout << "\nError opening file. Please try again.\n";
+            std::cout << "Error opening file. Please try again.\n";
             return;
         }
 
@@ -219,10 +219,10 @@ void Application::saveToFile() const
 
         if (outputFile.fail())
         {
-            std::cout << "\nWarning: An error occurred while writing figures to file\n";
+            std::cout << "Warning: An error occurred while writing figures to file\n";
         } else
         {
-            std::cout << "\nFigures successfully written!\n";
+            std::cout << "---Figures successfully written!---\n";
         }
     }
 }
